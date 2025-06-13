@@ -1,9 +1,9 @@
 
 import React from 'react';
-import RecensioneProDashboard from '../components/RecensioneProDashboard';
+import LandingPage from '../components/LandingPage';
 
 const Index = () => {
-  return <RecensioneProDashboard />;
+  return <LandingPage />;
 };
 
 export default Index;
