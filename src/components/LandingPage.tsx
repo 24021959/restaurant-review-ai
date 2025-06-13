@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { 
   Star, 
@@ -15,8 +14,10 @@ import {
   Calendar,
   Smartphone
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 export default function LandingPage() {
+  const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
@@ -35,6 +36,10 @@ export default function LandingPage() {
   const startFreeTrial = (plan?: string) => {
     setAuthMode('register');
     setShowAuthModal(true);
+  };
+
+  const openDemo = () => {
+    navigate('/demo');
   };
 
   const features = [
@@ -181,7 +186,10 @@ export default function LandingPage() {
                 Inizia Prova Gratuita 15 Giorni
                 <ArrowRight className="ml-2 h-5 w-5" />
               </button>
-              <button className="border border-gray-300 text-gray-700 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-50 transition-colors">
+              <button 
+                onClick={openDemo}
+                className="border border-gray-300 text-gray-700 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-50 transition-colors"
+              >
                 Guarda Demo
               </button>
             </div>
