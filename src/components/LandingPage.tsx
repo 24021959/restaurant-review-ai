@@ -24,7 +24,7 @@ export default function LandingPage() {
   const [password, setPassword] = useState('');
   const [restaurantName, setRestaurantName] = useState('');
 
-  const handleAuth = (e) => {
+  const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
     // Simulazione autenticazione - in produzione collegare a sistema auth reale
     console.log('Auth:', { authMode, email, password, restaurantName });
@@ -32,7 +32,7 @@ export default function LandingPage() {
     window.location.href = '/dashboard';
   };
 
-  const startFreeTrial = (plan) => {
+  const startFreeTrial = (plan?: string) => {
     setAuthMode('register');
     setShowAuthModal(true);
   };
@@ -144,7 +144,7 @@ export default function LandingPage() {
                 Accedi
               </button>
               <button 
-                onClick={() => startFreeTrial()}
+                onClick={() => startFreeTrial('Starter')}
                 className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
               >
                 Prova Gratis
@@ -175,7 +175,7 @@ export default function LandingPage() {
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               <button 
-                onClick={() => startFreeTrial()}
+                onClick={() => startFreeTrial('Professional')}
                 className="bg-orange-600 text-white px-8 py-4 rounded-lg text-lg font-medium hover:bg-orange-700 transition-colors flex items-center justify-center"
               >
                 Inizia Prova Gratuita 15 Giorni
@@ -328,7 +328,7 @@ export default function LandingPage() {
             Unisciti a centinaia di ristoratori che hanno già automatizzato la gestione delle loro recensioni
           </p>
           <button 
-            onClick={() => startFreeTrial()}
+            onClick={() => startFreeTrial('Professional')}
             className="bg-white text-orange-600 px-8 py-4 rounded-lg text-lg font-medium hover:bg-gray-50 transition-colors"
           >
             Inizia La Tua Prova Gratuita Ora
