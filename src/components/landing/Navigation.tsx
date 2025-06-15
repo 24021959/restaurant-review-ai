@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 
@@ -16,7 +15,7 @@ export default function Navigation({ onLoginClick, onRegisterClick }: Navigation
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <img src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" alt="RistoReply" className="h-10 w-auto" />
+            <img src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" alt="RistoReply" className="h-30 w-auto" />
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
