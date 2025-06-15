@@ -16,8 +16,7 @@ export default function Navigation({ onLoginClick, onRegisterClick }: Navigation
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
-            <h1 className="text-2xl font-bold text-orange-600">🍝 RistoReply</h1>
-            <span className="ml-2 text-sm text-gray-500">by AI</span>
+            <img src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" alt="RistoReply" className="h-10 w-auto" />
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
@@ -75,7 +74,7 @@ export default function Navigation({ onLoginClick, onRegisterClick }: Navigation
         </div>
       </div>
 
-      {/* Mobile menu (mostra le opzioni di login separatamente) */}
+      {/* Mobile menu */}
       {isMenuOpen && (
         <div className="md:hidden px-4 pb-4">
           <a href="#features" className="block py-2 text-gray-700 hover:text-orange-600 transition-colors">Funzionalità</a>
@@ -104,4 +103,3 @@ export default function Navigation({ onLoginClick, onRegisterClick }: Navigation
     </nav>
   );
 }
-

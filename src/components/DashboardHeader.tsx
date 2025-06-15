@@ -23,7 +23,12 @@ export default function DashboardHeader({ restaurantInfo, onLogout }: DashboardH
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-xl font-bold text-orange-600 cursor-pointer" onClick={() => navigate('/')}>🍝 RistoReply</h1>
+              <img 
+                src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" 
+                alt="RistoReply" 
+                className="h-8 w-auto cursor-pointer" 
+                onClick={() => navigate('/')} 
+              />
             </div>
             <div className="ml-8">
               <div className="flex items-center space-x-2">

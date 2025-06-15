@@ -12,12 +12,13 @@ export default function AdminHeader() {
     <header className="w-full flex justify-between items-center bg-white border-b shadow-sm px-6 py-4 mb-6">
       <div className="flex items-center gap-4">
         <button
-          className="flex items-center gap-1 text-orange-700 text-lg font-bold"
+          className="flex items-center gap-2"
           onClick={() => navigate("/")}
           title="Vai alla home"
         >
-          <Home className="w-5 h-5" />
-          <span>RistoReply Admin</span>
+          <Home className="w-5 h-5 text-orange-600" />
+          <img src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" alt="RistoReply Admin" className="h-8 w-auto" />
+          <span className="text-orange-700 text-sm font-medium">Admin</span>
         </button>
       </div>
       <button
