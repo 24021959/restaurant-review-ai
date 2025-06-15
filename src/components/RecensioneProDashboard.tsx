@@ -13,15 +13,29 @@ import {
   MapPin,
   TrendingUp,
   Filter,
-  LogOut
+  LogOut,
+  Key,
+  AlertTriangle
 } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { googleBusinessService } from './GoogleBusinessService';
+import { useApiKeyRotation } from '@/hooks/useApiKeyRotation';
+import ApiKeyManager from './ApiKeyManager';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function RecensioneProDashboard() {
+  const { signOut } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [selectedReview, setSelectedReview] = useState(null);
   const [isEditingResponse, setIsEditingResponse] = useState(false);
   const [editedResponse, setEditedResponse] = useState('');
   const [notifications, setNotifications] = useState(3);
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(false);
+  
+  const apiKeyRotation = useApiKeyRotation();
+  const usageStats = apiKeyRotation.getUsageStats();
+  const isOverLimit = apiKeyRotation.isOverLimit;
 
   // Dati di esempio - solo Google
   const restaurantInfo = {
@@ -108,8 +122,60 @@ export default function RecensioneProDashboard() {
     ));
   };
 
+  const loadReviews = async () => {
+    setLoading(true);
+    try {
+      const result = await googleBusinessService.getReviews('sample_business_id');
+      
+      if (result.rateLimited) {
+        // Mostra alert di rate limiting
+        console.warn('Rate limit raggiunto:', result.error);
+      } else if (result.error) {
+        console.error('Errore nel caricamento recensioni:', result.error);
+      } else {
+        setReviews(result.reviews);
+      }
+    } catch (error) {
+      console.error('Errore:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'dashboard') {
+      loadReviews();
+    }
+  }, [activeTab]);
+
   const renderDashboard = () => (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Alert per rate limiting */}
+      {isOverLimit && (
+        <div className="md:col-span-3 mb-4">
+          <Alert className="border-orange-200 bg-orange-50">
+            <AlertTriangle className="h-4 w-4 text-orange-600" />
+            <AlertDescription className="text-orange-800">
+              <strong>Limiti API raggiunti!</strong> Tutte le chiavi Google Business API hanno raggiunto i limiti giornalieri. 
+              Alcune funzionalità potrebbero essere limitate. Considera l'aggiunta di nuove chiavi API.
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
+
+      {/* Statistiche API Usage */}
+      <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200">
+        <div className="flex items-center space-x-3 mb-4">
+          <Key className="h-5 w-5 text-blue-600" />
+          <h3 className="text-lg font-semibold text-blue-800">API Usage</h3>
+        </div>
+        <p className="text-3xl font-bold text-blue-600">{usageStats.totalDailyUsage}</p>
+        <p className="text-sm text-blue-700">Richieste oggi</p>
+        <div className="mt-2 text-xs text-blue-600">
+          {usageStats.activeKeys}/{usageStats.totalKeys} chiavi attive
+        </div>
+      </div>
+
       {/* Statistiche Principali */}
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="flex items-center space-x-3 mb-4">
@@ -145,7 +211,7 @@ export default function RecensioneProDashboard() {
           </div>
         </div>
         <div className="h-48 bg-gray-100 rounded-md flex items-center justify-center text-gray-400">
-          Grafico placeholder
+          {loading ? "Caricamento..." : "Grafico placeholder"}
         </div>
       </div>
 
@@ -229,9 +295,26 @@ export default function RecensioneProDashboard() {
   );
 
   const renderSettings = () => (
-    <div>
+    <div className="space-y-6">
       <h2 className="text-2xl font-bold mb-4">Impostazioni</h2>
-      {/* Impostazioni account, notifiche, ecc. */}
+      
+      {/* Gestione API Keys */}
+      <ApiKeyManager />
+      
+      {/* Altre impostazioni */}
+      <div className="bg-white rounded-lg shadow-md p-6">
+        <h3 className="text-lg font-semibold mb-4">Impostazioni Generali</h3>
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <span>Notifiche email</span>
+            <input type="checkbox" defaultChecked />
+          </div>
+          <div className="flex items-center justify-between">
+            <span>Risposte automatiche</span>
+            <input type="checkbox" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 
