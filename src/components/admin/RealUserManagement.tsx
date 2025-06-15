@@ -46,28 +46,54 @@ export default function RealUserManagement() {
     try {
       setLoading(true);
       
-      const { data: profiles, error } = await supabase
+      // Fetch profiles first
+      const { data: profiles, error: profilesError } = await supabase
         .from('profiles')
-        .select(`
-          *,
-          restaurants(name),
-          subscriptions(plan, status),
-          user_roles(role)
-        `);
+        .select('*');
 
-      if (error) throw error;
+      if (profilesError) throw profilesError;
 
-      // Mappiamo i dati per gestire correttamente le relazioni e aggiungere il flag is_active
-      const usersWithActiveStatus = profiles?.map(user => ({
-        ...user,
-        restaurants: Array.isArray(user.restaurants) ? user.restaurants : (user.restaurants ? [user.restaurants] : []),
-        subscriptions: Array.isArray(user.subscriptions) ? user.subscriptions : (user.subscriptions ? [user.subscriptions] : []),
-        user_roles: Array.isArray(user.user_roles) ? user.user_roles : (user.user_roles ? [user.user_roles] : []),
-        is_active: user.subscriptions && (Array.isArray(user.subscriptions) ? user.subscriptions[0]?.status : user.subscriptions.status) === 'active' || 
-                   user.subscriptions && (Array.isArray(user.subscriptions) ? user.subscriptions[0]?.status : user.subscriptions.status) === 'trialing'
-      })) || [];
+      if (!profiles) {
+        setUsers([]);
+        return;
+      }
 
-      setUsers(usersWithActiveStatus);
+      // Fetch related data separately for each user
+      const usersWithRelations = await Promise.all(
+        profiles.map(async (profile) => {
+          // Fetch restaurants
+          const { data: restaurants } = await supabase
+            .from('restaurants')
+            .select('name')
+            .eq('owner_id', profile.id);
+
+          // Fetch subscriptions
+          const { data: subscriptions } = await supabase
+            .from('subscriptions')
+            .select('plan, status')
+            .eq('user_id', profile.id);
+
+          // Fetch user roles
+          const { data: userRoles } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', profile.id);
+
+          // Determine if user is active
+          const isActive = subscriptions && subscriptions.length > 0 && 
+            (subscriptions[0]?.status === 'active' || subscriptions[0]?.status === 'trialing');
+
+          return {
+            ...profile,
+            restaurants: restaurants || [],
+            subscriptions: subscriptions || [],
+            user_roles: userRoles || [],
+            is_active: isActive
+          };
+        })
+      );
+
+      setUsers(usersWithRelations);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast({
