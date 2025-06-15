@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -23,7 +22,6 @@ export default function BusinessProfileTab({ profile, form, setForm, edit, setEd
           <div className="mb-4 space-y-2">
             <div><b>Nome:</b> {profile.business_name}</div>
             {profile.business_description && <div><b>Descrizione:</b> {profile.business_description}</div>}
-            {profile.website && <div><b>Sito:</b> {profile.website}</div>}
             {profile.phone && <div><b>Telefono:</b> {profile.phone}</div>}
             {profile.address && <div><b>Indirizzo:</b> {profile.address}</div>}
             <Button onClick={() => setEdit(true)} className="mt-4">Modifica Profilo</Button>
@@ -37,10 +35,6 @@ export default function BusinessProfileTab({ profile, form, setForm, edit, setEd
             <div>
               <label className="block text-sm font-medium">Descrizione</label>
               <textarea className="input border rounded w-full p-2" value={form.business_description} onChange={e => setForm((f: any) => ({ ...f, business_description: e.target.value }))} />
-            </div>
-            <div>
-              <label className="block text-sm font-medium">Sito web</label>
-              <input className="input border rounded w-full p-2" value={form.website} onChange={e => setForm((f: any) => ({ ...f, website: e.target.value }))} />
             </div>
             <div>
               <label className="block text-sm font-medium">Telefono</label>

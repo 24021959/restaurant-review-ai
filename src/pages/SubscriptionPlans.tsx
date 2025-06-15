@@ -46,6 +46,10 @@ const plans = [
 ];
 
 export default function SubscriptionPlans() {
+  // Funzione per eseguire il redirect alla dashboard
+  function goToDashboard() {
+    window.location.href = "/dashboard";
+  }
   return (
     <div className="min-h-screen flex justify-center items-center bg-gradient-to-br from-orange-50 to-purple-100 px-2">
       <div className="bg-white shadow-xl rounded-xl px-4 md:px-8 py-10 w-full max-w-lg md:max-w-2xl">
@@ -89,6 +93,11 @@ export default function SubscriptionPlans() {
           <CarouselPrevious />
           <CarouselNext />
         </Carousel>
+        <div className="flex justify-center mt-6">
+          <Button onClick={goToDashboard} variant="outline">
+            Vai alla Dashboard
+          </Button>
+        </div>
         <div className="text-center mt-10">
           <p className="text-gray-600 mb-1">
             🎯 <strong>15 giorni di prova gratuita</strong> • Nessun vincolo • Cancellazione immediata

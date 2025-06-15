@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -68,7 +67,7 @@ export default function KnowledgeTab({ website, setWebsite, extractedTexts, setE
               className="flex-1"
               disabled={loading}
             />
-            <Button type="submit" disabled={loading}>{loading ? "Estrazione..." : "Estrai testi"}</Button>
+            <Button type="submit" disabled={loading}>{loading ? "Estrazione..." : "Estrai informazioni"}</Button>
           </form>
           {extractedTexts.length > 0 && (
             <div className="p-3 bg-gray-50 rounded">
