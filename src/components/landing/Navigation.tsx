@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 
@@ -11,11 +12,22 @@ export default function Navigation({ onLoginClick, onRegisterClick }: Navigation
   const [isLoginMenuOpen, setIsLoginMenuOpen] = useState(false);
 
   return (
-    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
+    <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-24">
-          <div className="flex items-center">
-            <img src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" alt="RistoReply" className="h-16 w-auto bg-transparent" />
+          <div className="flex items-center relative">
+            {/* Logo circolare che sporge dall'header */}
+            <div className="absolute -top-4 left-0 w-20 h-20 bg-gradient-to-br from-orange-500 to-orange-600 rounded-full shadow-lg flex items-center justify-center border-4 border-white z-10">
+              <img 
+                src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" 
+                alt="RistoReply" 
+                className="h-12 w-12 object-contain" 
+              />
+            </div>
+            {/* Spazio per evitare sovrapposizioni con il menu */}
+            <div className="ml-24">
+              <span className="text-xl font-bold text-gray-800">RistoReply</span>
+            </div>
           </div>
 
           <div className="hidden md:flex items-center space-x-8">
