@@ -1,53 +1,48 @@
 
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  Users, 
-  TrendingUp, 
-  DollarSign, 
-  AlertCircle,
-  Settings,
-  Database,
-  Mail,
-  Shield
-} from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Users, Settings, BarChart3, CreditCard, ArrowLeft } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import AdminStats from './AdminStats';
-import UserManagement from './UserManagement';
+import RealUserManagement from './RealUserManagement';
 import SubscriptionManagement from './SubscriptionManagement';
 import SystemSettings from './SystemSettings';
 
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('overview');
+  const navigate = useNavigate();
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="bg-white border-b">
+      <div className="bg-white shadow-sm border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-6">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900">
-                Pannello Amministrazione
-              </h1>
-              <p className="text-gray-600">
-                Gestisci utenti, abbonamenti e impostazioni di sistema
-              </p>
+            <div className="flex items-center space-x-4">
+              <Button
+                variant="ghost"
+                onClick={() => navigate('/dashboard')}
+                className="flex items-center"
+              >
+                <ArrowLeft className="h-4 w-4 mr-2" />
+                Torna alla Dashboard
+              </Button>
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  🔧 Pannello Amministratore
+                </h1>
+                <p className="text-gray-600">Gestisci utenti, abbonamenti e impostazioni di sistema</p>
+              </div>
             </div>
-            <Badge variant="secondary" className="bg-orange-100 text-orange-800">
-              <Shield className="h-4 w-4 mr-1" />
-              Admin
-            </Badge>
           </div>
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-6">
+        <Tabs defaultValue="overview" className="space-y-6">
           <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview" className="flex items-center gap-2">
-              <TrendingUp className="h-4 w-4" />
+              <BarChart3 className="h-4 w-4" />
               Panoramica
             </TabsTrigger>
             <TabsTrigger value="users" className="flex items-center gap-2">
@@ -55,7 +50,7 @@ export default function AdminDashboard() {
               Utenti
             </TabsTrigger>
             <TabsTrigger value="subscriptions" className="flex items-center gap-2">
-              <DollarSign className="h-4 w-4" />
+              <CreditCard className="h-4 w-4" />
               Abbonamenti
             </TabsTrigger>
             <TabsTrigger value="settings" className="flex items-center gap-2">
@@ -70,33 +65,21 @@ export default function AdminDashboard() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <AlertCircle className="h-5 w-5 text-red-500" />
-                    Avvisi Sistema
-                  </CardTitle>
-                  <CardDescription>
-                    Problemi che richiedono attenzione
-                  </CardDescription>
+                  <CardTitle>Attività Recente</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 bg-yellow-50 rounded-lg">
-                      <div>
-                        <p className="font-medium text-yellow-800">Chiavi API in scadenza</p>
-                        <p className="text-sm text-yellow-700">3 utenti hanno chiavi che scadono in 7 giorni</p>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        Visualizza
-                      </Button>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between py-2 border-b">
+                      <span className="text-sm">Nuovo utente registrato</span>
+                      <span className="text-xs text-gray-500">2 ore fa</span>
                     </div>
-                    <div className="flex items-center justify-between p-3 bg-red-50 rounded-lg">
-                      <div>
-                        <p className="font-medium text-red-800">Pagamenti falliti</p>
-                        <p className="text-sm text-red-700">2 abbonamenti con problemi di pagamento</p>
-                      </div>
-                      <Button size="sm" variant="outline">
-                        Risolvi
-                      </Button>
+                    <div className="flex items-center justify-between py-2 border-b">
+                      <span className="text-sm">Piano aggiornato a Professional</span>
+                      <span className="text-xs text-gray-500">4 ore fa</span>
+                    </div>
+                    <div className="flex items-center justify-between py-2">
+                      <span className="text-sm">Nuova recensione elaborata</span>
+                      <span className="text-xs text-gray-500">6 ore fa</span>
                     </div>
                   </div>
                 </CardContent>
@@ -104,42 +87,25 @@ export default function AdminDashboard() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <Database className="h-5 w-5 text-blue-500" />
-                    Utilizzo Risorse
-                  </CardTitle>
-                  <CardDescription>
-                    Stato delle risorse di sistema
-                  </CardDescription>
+                  <CardTitle>Stato Sistema</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-4">
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Database</span>
-                        <span>67%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-blue-600 h-2 rounded-full" style={{ width: '67%' }}></div>
-                      </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">API Google Business</span>
+                      <span className="text-green-600 text-sm font-medium">Operativo</span>
                     </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>API Calls</span>
-                        <span>45%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-green-600 h-2 rounded-full" style={{ width: '45%' }}></div>
-                      </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Database</span>
+                      <span className="text-green-600 text-sm font-medium">Operativo</span>
                     </div>
-                    <div>
-                      <div className="flex justify-between text-sm mb-1">
-                        <span>Storage</span>
-                        <span>23%</span>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '23%' }}></div>
-                      </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Servizio AI</span>
+                      <span className="text-green-600 text-sm font-medium">Operativo</span>
+                    </div>
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm">Sistema Pagamenti</span>
+                      <span className="text-green-600 text-sm font-medium">Operativo</span>
                     </div>
                   </div>
                 </CardContent>
@@ -148,7 +114,7 @@ export default function AdminDashboard() {
           </TabsContent>
 
           <TabsContent value="users">
-            <UserManagement />
+            <RealUserManagement />
           </TabsContent>
 
           <TabsContent value="subscriptions">

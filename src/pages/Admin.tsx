@@ -3,6 +3,7 @@ import React from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import { Navigate } from 'react-router-dom';
 import AdminDashboard from '@/components/admin/AdminDashboard';
+import AdminGuard from '@/components/admin/AdminGuard';
 
 const Admin = () => {
   const { user, loading } = useAuth();
@@ -19,10 +20,11 @@ const Admin = () => {
     return <Navigate to="/auth" replace />;
   }
 
-  // In una implementazione reale, qui verificheresti se l'utente ha ruolo admin
-  // Per ora permettiamo l'accesso a tutti gli utenti autenticati
-
-  return <AdminDashboard />;
+  return (
+    <AdminGuard>
+      <AdminDashboard />
+    </AdminGuard>
+  );
 };
 
 export default Admin;
