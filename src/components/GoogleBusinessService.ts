@@ -1,6 +1,4 @@
 
-import { useApiKeyRotation } from '@/hooks/useApiKeyRotation';
-
 interface ReviewsResponse {
   reviews: any[];
   error?: string;
@@ -14,7 +12,6 @@ interface GoogleBusinessConfig {
 }
 
 export class GoogleBusinessService {
-  private apiKeyRotation = useApiKeyRotation();
   private cache = new Map<string, { data: any; expires: number }>();
   private config: GoogleBusinessConfig = {
     maxRetries: 3,
@@ -22,7 +19,11 @@ export class GoogleBusinessService {
     cacheTTL: 5 * 60 * 1000 // 5 minuti
   };
 
-  async getReviews(businessId: string, useCache = true): Promise<ReviewsResponse> {
+  async getReviews(
+    businessId: string, 
+    apiKeyRotation: any,
+    useCache = true
+  ): Promise<ReviewsResponse> {
     // Controlla la cache prima
     if (useCache) {
       const cached = this.getCachedData(`reviews_${businessId}`);
@@ -36,7 +37,7 @@ export class GoogleBusinessService {
     
     for (let attempt = 0; attempt < this.config.maxRetries; attempt++) {
       try {
-        const apiKey = await this.apiKeyRotation.getAvailableKey();
+        const apiKey = await apiKeyRotation.getAvailableKey();
         
         if (!apiKey) {
           return {
@@ -55,7 +56,7 @@ export class GoogleBusinessService {
           this.setCachedData(`reviews_${businessId}`, data.reviews);
           
           // Registra l'utilizzo
-          await this.apiKeyRotation.recordUsage(apiKey);
+          await apiKeyRotation.recordUsage(apiKey);
           
           return { reviews: data.reviews || [] };
         }
@@ -124,16 +125,6 @@ export class GoogleBusinessService {
   // Metodo per pulire la cache manualmente
   clearCache(): void {
     this.cache.clear();
-  }
-
-  // Metodo per ottenere statistiche di utilizzo
-  getUsageStats() {
-    return this.apiKeyRotation.getUsageStats();
-  }
-
-  // Metodo per verificare se si è raggiunto il limite
-  isOverLimit(): boolean {
-    return this.apiKeyRotation.isOverLimit;
   }
 }
 

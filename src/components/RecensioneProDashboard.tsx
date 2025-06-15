@@ -18,7 +18,7 @@ import {
   AlertTriangle
 } from 'lucide-react';
 import { useAuth } from '@/contexts/AuthContext';
-import { googleBusinessService } from './GoogleBusinessService';
+import { useGoogleBusinessService } from '@/hooks/useGoogleBusinessService';
 import { useApiKeyRotation } from '@/hooks/useApiKeyRotation';
 import ApiKeyManager from './ApiKeyManager';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -33,6 +33,7 @@ export default function RecensioneProDashboard() {
   const [reviews, setReviews] = useState([]);
   const [loading, setLoading] = useState(false);
   
+  const googleBusinessService = useGoogleBusinessService();
   const apiKeyRotation = useApiKeyRotation();
   const usageStats = apiKeyRotation.getUsageStats();
   const isOverLimit = apiKeyRotation.isOverLimit;
