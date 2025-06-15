@@ -75,8 +75,8 @@ export default function RecensioneProDashboard() {
   };
   const isOverLimit = false;
 
-  const showCompleteProfile =
-    (!businessProfile && (activeTab === 'dashboard' || activeTab === 'settings'));
+  // Mostra alert di completamento profilo SOLO nella pagina impostazioni, non più qui!
+  // La dashboard mostra SEMPRE le statistiche.
 
   const trialEndsAt = subscription?.trial_ends_at || null;
 
@@ -93,35 +93,27 @@ export default function RecensioneProDashboard() {
         />
         <main className="flex-1 py-6 px-4">
           <TrialStatusAlert trialEndsAt={trialEndsAt} />
-          {
-            // Modifica: mostro impostazioni SOLO nel tab 'settings', dashboard è pulita!
-            activeTab === 'settings' ? (
-              <div className="max-w-2xl mx-auto mt-8">
-                <BusinessProfileManager />
-              </div>
-            ) : showCompleteProfile ? (
-              <div className="max-w-2xl mx-auto mt-20">
-                <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-6 mb-8 text-center">
-                  <h2 className="text-xl font-bold text-yellow-800 mb-2">Completa il tuo profilo attività</h2>
-                  <p className="mb-4 text-yellow-700">Per accedere alle funzionalità, inserisci i dati della tua attività qui sotto.</p>
-                </div>
-                <BusinessProfileManager />
-              </div>
-            ) : (
-              <DashboardContent
-                activeTab={activeTab}
-                usageStats={usageStats}
-                isOverLimit={isOverLimit}
-                dashboardStats={dashboardStats}
-                restaurantInfo={restaurantInfo}
-                loading={false}
-                onTabChange={setActiveTab}
-                onRefreshData={() => { }}
-              />
-            )
-          }
+          {activeTab === 'settings' ? (
+            <div className="max-w-2xl mx-auto mt-8">
+              {/* Adesso solo qui mostro la richiesta/invito a completare il profilo attività */}
+              <BusinessProfileManager />
+            </div>
+          ) : (
+            // Dashboard e tutte le altre tab mostreranno solo il contenuto e le statistiche, anche se il profilo non è completo
+            <DashboardContent
+              activeTab={activeTab}
+              usageStats={usageStats}
+              isOverLimit={isOverLimit}
+              dashboardStats={dashboardStats}
+              restaurantInfo={restaurantInfo}
+              loading={false}
+              onTabChange={setActiveTab}
+              onRefreshData={() => { }}
+            />
+          )}
         </main>
       </div>
     </div>
   );
 }
+
