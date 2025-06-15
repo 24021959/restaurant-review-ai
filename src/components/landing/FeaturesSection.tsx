@@ -5,24 +5,24 @@ import { MessageCircle, Clock, BarChart3, Shield } from 'lucide-react';
 export default function FeaturesSection() {
   const features = [
     {
-      icon: <MessageCircle className="h-6 w-6 text-orange-600" />,
-      title: "Risposte AI Intelligenti",
-      description: "L'intelligenza artificiale analizza ogni recensione e genera risposte personalizzate e professionali in pochi secondi."
+      icon: <Clock className="h-6 w-6 text-orange-600" />,
+      title: "Risparmia Ore Ogni Settimana",
+      description: "Stop a perdere 2-3 ore al giorno per rispondere alle recensioni. La nostra AI lo fa per te in secondi, liberando il tuo tempo per servire meglio i clienti."
     },
     {
-      icon: <Clock className="h-6 w-6 text-orange-600" />,
-      title: "Risposta in Tempo Reale",
-      description: "Non perdere mai una recensione. Il sistema monitora costantemente il tuo profilo Google Business e risponde immediatamente."
+      icon: <MessageCircle className="h-6 w-6 text-orange-600" />,
+      title: "Risposte Che Aumentano la Soddisfazione",
+      description: "Risposte sempre professionali e personalizzate che migliorano la percezione del tuo ristorante. Clienti più soddisfatti = più prenotazioni."
     },
     {
       icon: <BarChart3 className="h-6 w-6 text-orange-600" />,
-      title: "Analytics Dettagliati",
-      description: "Scopri tendenze, sentiment dei clienti e migliora la reputazione del tuo ristorante con reportistica avanzata."
+      title: "Monitora e Migliora la Reputazione",
+      description: "Analisi dettagliate del sentiment dei clienti ti aiutano a identificare problemi prima che diventino gravi e a migliorare continuamente il servizio."
     },
     {
       icon: <Shield className="h-6 w-6 text-orange-600" />,
-      title: "Controllo Totale",
-      description: "Revisiona e modifica ogni risposta prima della pubblicazione. Tu mantieni sempre il controllo finale."
+      title: "Tu Mantieni Sempre il Controllo",
+      description: "Ogni risposta può essere rivista e modificata prima della pubblicazione. L'AI fa il lavoro pesante, tu dai il tocco finale."
     }
   ];
 
@@ -34,7 +34,7 @@ export default function FeaturesSection() {
             Perché I Ristoratori Scelgono RistoReply
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            La soluzione completa per gestire la reputazione online del tuo ristorante senza stress
+            Smetti di sprecare tempo prezioso e inizia a vedere risultati concreti nella soddisfazione dei tuoi clienti
           </p>
         </div>
         
