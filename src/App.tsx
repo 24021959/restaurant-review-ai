@@ -12,6 +12,7 @@ import Admin from "./pages/Admin";
 import NotFound from "./pages/NotFound";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminLogin from "./pages/AdminLogin";
+import SubscriptionPlans from "./pages/SubscriptionPlans";
 
 const queryClient = new QueryClient();
 
@@ -43,6 +44,7 @@ const App = () => (
                 </ProtectedRoute>
               } 
             />
+            <Route path="/piani-abbonamento" element={<SubscriptionPlans />} />
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>

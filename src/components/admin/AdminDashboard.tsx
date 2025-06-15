@@ -8,6 +8,7 @@ import StripeIntegrationPanel from "./StripeIntegrationPanel";
 import IntegrationSettingsPanel from "./IntegrationSettingsPanel";
 import GoogleApiKeyPanel from "./GoogleApiKeyPanel";
 import ResendApiKeyPanel from "./ResendApiKeyPanel";
+import AdminDebugPanel from "./AdminDebugPanel";
 
 export default function AdminDashboard() {
   return (
@@ -45,6 +46,8 @@ export default function AdminDashboard() {
       <section>
         <SystemSettings />
       </section>
+      {/* Debug Panel */}
+      <AdminDebugPanel />
     </div>
   );
 }

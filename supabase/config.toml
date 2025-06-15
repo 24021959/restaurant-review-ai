@@ -4,3 +4,8 @@ project_id = "rmzzpmgxdvpsrxcgtfhx"
 [functions.scrape-google-reviews]
 verify_jwt = true
 
+[functions.scheduled-google-scrape]
+verify_jwt = false
+
+[functions.send-notification-email]
+verify_jwt = false

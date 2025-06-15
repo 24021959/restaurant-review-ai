@@ -6,6 +6,7 @@ import DashboardContent from './DashboardContent';
 import { supabase } from "@/integrations/supabase/client";
 import BusinessProfileManager from './BusinessProfileManager';
 import { useNavigate } from 'react-router-dom';
+import TrialStatusAlert from "./TrialStatusAlert";
 
 export default function RecensioneProDashboard() {
   const { signOut, user } = useAuth();
@@ -61,6 +62,8 @@ export default function RecensioneProDashboard() {
   const showCompleteProfile =
     (!businessProfile && (activeTab === 'dashboard' || activeTab === 'settings'));
 
+  const trialEndsAt = user?.trial_ends_at || null; // Se disponibile su oggetto user
+
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardHeader 
@@ -73,6 +76,7 @@ export default function RecensioneProDashboard() {
           onTabChange={setActiveTab}
         />
         <main className="flex-1 py-6 px-4">
+          <TrialStatusAlert trialEndsAt={trialEndsAt} />
           {showCompleteProfile ? (
             <div className="max-w-2xl mx-auto mt-20">
               <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-6 mb-8 text-center">
