@@ -21,14 +21,14 @@ interface UserProfile {
   created_at: string;
   restaurants?: {
     name: string;
-  }[];
+  }[] | null;
   subscriptions?: {
     plan: string;
     status: string;
-  }[];
+  }[] | null;
   user_roles?: {
     role: string;
-  }[];
+  }[] | null;
   is_active?: boolean;
 }
 
@@ -57,10 +57,14 @@ export default function RealUserManagement() {
 
       if (error) throw error;
 
-      // Mappiamo i dati per aggiungere il flag is_active basato sullo stato della subscription
+      // Mappiamo i dati per gestire correttamente le relazioni e aggiungere il flag is_active
       const usersWithActiveStatus = profiles?.map(user => ({
         ...user,
-        is_active: user.subscriptions?.[0]?.status === 'active' || user.subscriptions?.[0]?.status === 'trialing'
+        restaurants: Array.isArray(user.restaurants) ? user.restaurants : (user.restaurants ? [user.restaurants] : []),
+        subscriptions: Array.isArray(user.subscriptions) ? user.subscriptions : (user.subscriptions ? [user.subscriptions] : []),
+        user_roles: Array.isArray(user.user_roles) ? user.user_roles : (user.user_roles ? [user.user_roles] : []),
+        is_active: user.subscriptions && (Array.isArray(user.subscriptions) ? user.subscriptions[0]?.status : user.subscriptions.status) === 'active' || 
+                   user.subscriptions && (Array.isArray(user.subscriptions) ? user.subscriptions[0]?.status : user.subscriptions.status) === 'trialing'
       })) || [];
 
       setUsers(usersWithActiveStatus);
