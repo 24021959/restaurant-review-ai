@@ -10,7 +10,7 @@ import { useNavigate } from 'react-router-dom';
 import { useToast } from '@/hooks/use-toast';
 
 export default function AdminLogin() {
-  const { user, signIn, signOut, loading } = useAuth();
+  const { user, signIn, signOut, loading, resetPassword } = useAuth();
   const { isAdmin, loading: roleLoading } = useUserRole();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -47,6 +47,18 @@ export default function AdminLogin() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toast({
+        title: "Email richiesta",
+        description: "Per favore, inserisci la tua email per reimpostare la password.",
+        variant: "destructive",
+      });
+      return;
+    }
+    await resetPassword(email, `${window.location.origin}/admin-login`);
   };
 
   if (loading || roleLoading) {
@@ -92,6 +104,16 @@ export default function AdminLogin() {
                 placeholder="••••••••"
                 required
               />
+            </div>
+            <div className="text-right text-sm">
+                <button
+                    type="button"
+                    onClick={handlePasswordReset}
+                    className="font-medium text-orange-600 hover:text-orange-700 underline disabled:text-gray-400 disabled:no-underline"
+                    disabled={!email || isSubmitting}
+                >
+                    Password dimenticata?
+                </button>
             </div>
             <Button
               type="submit"

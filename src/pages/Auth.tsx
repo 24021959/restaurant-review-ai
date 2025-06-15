@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -7,9 +6,10 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { useToast } from '@/hooks/use-toast';
 
 export default function Auth() {
-  const { user, signIn, signUp, loading } = useAuth();
+  const { user, signIn, signUp, loading, resetPassword } = useAuth();
   const { role, loading: roleLoading } = useUserRole();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -17,6 +17,7 @@ export default function Auth() {
   const [restaurantName, setRestaurantName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   // Redirect after login: solo utenti normali, NON admin
   useEffect(() => {
@@ -43,6 +44,18 @@ export default function Auth() {
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const handlePasswordReset = async () => {
+    if (!email) {
+      toast({
+        title: "Email richiesta",
+        description: "Per favore, inserisci la tua email per reimpostare la password.",
+        variant: "destructive",
+      });
+      return;
+    }
+    await resetPassword(email, `${window.location.origin}/auth`);
   };
 
   if (loading || roleLoading) {
@@ -109,6 +122,19 @@ export default function Auth() {
               />
             </div>
             
+            {isLogin && (
+              <div className="text-right text-sm -mt-2">
+                  <button
+                      type="button"
+                      onClick={handlePasswordReset}
+                      className="font-medium text-orange-600 hover:text-orange-700 underline disabled:text-gray-400 disabled:no-underline"
+                      disabled={!email || isSubmitting}
+                  >
+                      Password dimenticata?
+                  </button>
+              </div>
+            )}
+
             <Button 
               type="submit" 
               className="w-full bg-orange-600 hover:bg-orange-700"
