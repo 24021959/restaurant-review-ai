@@ -1,7 +1,8 @@
 
 import React, { useState, useEffect } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { useUserRole } from '@/hooks/useUserRole';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -9,16 +10,24 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 
 export default function Auth() {
   const { user, signIn, signUp, loading } = useAuth();
+  const { role, loading: roleLoading } = useUserRole();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [restaurantName, setRestaurantName] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
 
-  // Redirect if already authenticated
-  if (user && !loading) {
-    return <Navigate to="/dashboard" replace />;
-  }
+  // Esegui redirect in base al ruolo dell'utente dopo il login
+  useEffect(() => {
+    if (!loading && !roleLoading && user) {
+      if (role === 'admin') {
+        navigate('/admin', { replace: true });
+      } else {
+        navigate('/dashboard', { replace: true });
+      }
+    }
+  }, [loading, roleLoading, user, role, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,12 +39,13 @@ export default function Auth() {
       } else {
         await signUp(email, password, restaurantName);
       }
+      // Dopo il login, ci pensa lo useEffect a reindirizzare
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  if (loading) {
+  if (loading || roleLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-orange-600"></div>
