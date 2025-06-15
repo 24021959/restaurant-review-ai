@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Star } from 'lucide-react';
 import {
@@ -23,7 +22,7 @@ export default function TestimonialsSection() {
       restaurant: "Trattoria La Nonna",
       text: "Finalmente posso concentrarmi sulla cucina mentre RistoReply si occupa delle recensioni. Semplicemente fantastico!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1551218372-a8789b81b253?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1594736797933-d0d501ba2fe6?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Andrea Conti",
@@ -51,7 +50,7 @@ export default function TestimonialsSection() {
       restaurant: "La Tavola della Nonna",
       text: "Non devo più preoccuparmi delle recensioni negative. L'AI risponde sempre in modo professionale e cortese.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1594736797933-d0d501ba2fe6?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Giuseppe Lombardi",

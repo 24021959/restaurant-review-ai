@@ -1,4 +1,3 @@
-
 import React from "react";
 import { LogOut, Home } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -17,7 +16,7 @@ export default function AdminHeader() {
           title="Vai alla home"
         >
           <Home className="w-5 h-5 text-orange-600" />
-          <img src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" alt="RistoReply Admin" className="h-12 w-auto bg-transparent" />
+          <img src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" alt="RistoReply Admin" className="h-16 w-auto bg-transparent" />
           <span className="text-orange-700 text-sm font-medium">Admin</span>
         </button>
       </div>
