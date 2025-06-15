@@ -12,14 +12,12 @@ export const useUserRole = () => {
     let isMounted = true;
     setLoading(!!user);
 
-    // Non fetchare se non loggato
     if (!user) {
       setRole(null);
       setLoading(false);
       return;
     }
 
-    // Refattorizzato: usa una async IIFE per gestire la promise
     (async () => {
       try {
         const { data, error } = await supabase
@@ -28,18 +26,23 @@ export const useUserRole = () => {
           .eq('user_id', user.id);
 
         if (!isMounted) return;
+        
         if (error) {
-          setRole(null);
+          console.error('Error fetching user role:', error);
+          setRole('user'); // Default to user role
         } else if (Array.isArray(data)) {
-          // ATTENZIONE: Un utente NON dovrebbe mai avere sia admin che user. Ma qui diamo precedenza ad admin.
-          if (data.find(r => r.role === 'admin')) setRole('admin');
-          else if (data.find(r => r.role === 'user')) setRole('user');
-          else setRole(null);
+          // Check if user has admin role, otherwise default to user
+          if (data.find(r => r.role === 'admin')) {
+            setRole('admin');
+          } else {
+            setRole('user');
+          }
         } else {
-          setRole(null);
+          setRole('user');
         }
       } catch (e) {
-        if (isMounted) setRole(null);
+        console.error('Error in useUserRole:', e);
+        if (isMounted) setRole('user');
       } finally {
         if (isMounted) setLoading(false);
       }

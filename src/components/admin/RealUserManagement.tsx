@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Search, MoreHorizontal, UserCog, Shield } from 'lucide-react';
+import { Search, MoreHorizontal, UserCog, Shield, User, Ban } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import {
@@ -19,14 +19,17 @@ interface UserProfile {
   id: string;
   email: string;
   created_at: string;
-  restaurant?: {
+  restaurants?: {
     name: string;
-  };
-  subscription?: {
+  }[];
+  subscriptions?: {
     plan: string;
     status: string;
-  };
-  role?: string;
+  }[];
+  user_roles?: {
+    role: string;
+  }[];
+  is_active?: boolean;
 }
 
 export default function RealUserManagement() {
@@ -41,6 +44,8 @@ export default function RealUserManagement() {
 
   const fetchUsers = async () => {
     try {
+      setLoading(true);
+      
       const { data: profiles, error } = await supabase
         .from('profiles')
         .select(`
@@ -52,7 +57,13 @@ export default function RealUserManagement() {
 
       if (error) throw error;
 
-      setUsers(profiles || []);
+      // Mappiamo i dati per aggiungere il flag is_active basato sullo stato della subscription
+      const usersWithActiveStatus = profiles?.map(user => ({
+        ...user,
+        is_active: user.subscriptions?.[0]?.status === 'active' || user.subscriptions?.[0]?.status === 'trialing'
+      })) || [];
+
+      setUsers(usersWithActiveStatus);
     } catch (error) {
       console.error('Error fetching users:', error);
       toast({
@@ -65,19 +76,39 @@ export default function RealUserManagement() {
     }
   };
 
+  const toggleUserStatus = async (userId: string, currentStatus: boolean) => {
+    try {
+      const newStatus = currentStatus ? 'canceled' : 'active';
+      
+      const { error } = await supabase
+        .from('subscriptions')
+        .update({ status: newStatus })
+        .eq('user_id', userId);
+      
+      if (error) throw error;
+
+      toast({
+        title: "Successo",
+        description: `Utente ${newStatus === 'active' ? 'attivato' : 'disattivato'} con successo`
+      });
+
+      fetchUsers(); // Refresh the list
+    } catch (error) {
+      console.error('Error updating user status:', error);
+      toast({
+        title: "Errore",
+        description: "Impossibile aggiornare lo stato dell'utente",
+        variant: "destructive"
+      });
+    }
+  };
+
   const toggleAdminRole = async (userId: string, currentRole: string) => {
     try {
-      const newRole = currentRole === 'admin' ? 'user' : 'admin';
+      const isAdmin = currentRole === 'admin';
       
-      if (newRole === 'admin') {
-        // Add admin role
-        const { error } = await supabase
-          .from('user_roles')
-          .insert({ user_id: userId, role: 'admin' });
-        
-        if (error) throw error;
-      } else {
-        // Remove admin role
+      if (isAdmin) {
+        // Rimuovi il ruolo admin
         const { error } = await supabase
           .from('user_roles')
           .delete()
@@ -85,25 +116,36 @@ export default function RealUserManagement() {
           .eq('role', 'admin');
         
         if (error) throw error;
+      } else {
+        // Aggiungi il ruolo admin
+        const { error } = await supabase
+          .from('user_roles')
+          .insert({ user_id: userId, role: 'admin' });
+        
+        if (error) throw error;
       }
 
       toast({
         title: "Successo",
-        description: `Ruolo ${newRole} ${newRole === 'admin' ? 'assegnato' : 'rimosso'} con successo`
+        description: `Ruolo admin ${isAdmin ? 'rimosso' : 'assegnato'} con successo`
       });
 
       fetchUsers(); // Refresh the list
     } catch (error) {
-      console.error('Error updating role:', error);
+      console.error('Error updating admin role:', error);
       toast({
         title: "Errore",
-        description: "Impossibile aggiornare il ruolo utente",
+        description: "Impossibile aggiornare il ruolo admin",
         variant: "destructive"
       });
     }
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status: string, isActive: boolean) => {
+    if (!isActive) {
+      return <Badge className="bg-red-100 text-red-800">Disattivato</Badge>;
+    }
+    
     switch (status) {
       case 'active':
         return <Badge className="bg-green-100 text-green-800">Attivo</Badge>;
@@ -131,7 +173,7 @@ export default function RealUserManagement() {
 
   const filteredUsers = users.filter(user =>
     user.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    (user.restaurant?.name || '').toLowerCase().includes(searchQuery.toLowerCase())
+    (user.restaurants?.[0]?.name || '').toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   if (loading) {
@@ -145,7 +187,7 @@ export default function RealUserManagement() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Gestione Utenti Reali</CardTitle>
+        <CardTitle>Gestione Utenti</CardTitle>
         <CardDescription>
           Visualizza e gestisci tutti gli utenti registrati della piattaforma
         </CardDescription>
@@ -188,21 +230,24 @@ export default function RealUserManagement() {
                       <div className="text-sm text-gray-500">ID: {user.id.slice(0, 8)}...</div>
                     </div>
                   </TableCell>
-                  <TableCell>{user.restaurant?.name || 'Non configurato'}</TableCell>
+                  <TableCell>{user.restaurants?.[0]?.name || 'Non configurato'}</TableCell>
                   <TableCell>
-                    {user.subscription?.plan ? getPlanBadge(user.subscription.plan) : 'N/A'}
+                    {user.subscriptions?.[0]?.plan ? getPlanBadge(user.subscriptions[0].plan) : 'N/A'}
                   </TableCell>
                   <TableCell>
-                    {user.subscription?.status ? getStatusBadge(user.subscription.status) : 'N/A'}
+                    {user.subscriptions?.[0]?.status ? getStatusBadge(user.subscriptions[0].status, user.is_active || false) : 'N/A'}
                   </TableCell>
                   <TableCell>
-                    {user.role === 'admin' ? (
+                    {user.user_roles?.some(role => role.role === 'admin') ? (
                       <Badge className="bg-red-100 text-red-800">
                         <Shield className="w-3 h-3 mr-1" />
                         Admin
                       </Badge>
                     ) : (
-                      <Badge variant="outline">User</Badge>
+                      <Badge variant="outline">
+                        <User className="w-3 h-3 mr-1" />
+                        User
+                      </Badge>
                     )}
                   </TableCell>
                   <TableCell>{new Date(user.created_at).toLocaleDateString('it-IT')}</TableCell>
@@ -215,10 +260,28 @@ export default function RealUserManagement() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem
-                          onClick={() => toggleAdminRole(user.id, user.role || 'user')}
+                          onClick={() => toggleUserStatus(user.id, user.is_active || false)}
+                        >
+                          {user.is_active ? (
+                            <>
+                              <Ban className="mr-2 h-4 w-4" />
+                              Disattiva Utente
+                            </>
+                          ) : (
+                            <>
+                              <User className="mr-2 h-4 w-4" />
+                              Attiva Utente
+                            </>
+                          )}
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => toggleAdminRole(
+                            user.id, 
+                            user.user_roles?.some(role => role.role === 'admin') ? 'admin' : 'user'
+                          )}
                         >
                           <UserCog className="mr-2 h-4 w-4" />
-                          {user.role === 'admin' ? 'Rimuovi Admin' : 'Rendi Admin'}
+                          {user.user_roles?.some(role => role.role === 'admin') ? 'Rimuovi Admin' : 'Rendi Admin'}
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

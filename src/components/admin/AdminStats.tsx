@@ -14,27 +14,41 @@ export default function AdminStats() {
 
   useEffect(() => {
     const fetchStats = async () => {
-      // Carica utenti totali
-      const { count: totalUsers } = await supabase
-        .from("profiles")
-        .select("id", { count: "exact", head: true });
+      try {
+        // Carica utenti totali reali
+        const { count: totalUsers } = await supabase
+          .from("profiles")
+          .select("id", { count: "exact", head: true });
 
-      // Carica utenti attivi (loggati negli ultimi 30 giorni) - placeholder per ora
-      const activeUsers = Math.floor((totalUsers || 0) * 0.7);
+        // Carica utenti attivi (con subscription attiva)
+        const { count: activeUsers } = await supabase
+          .from("subscriptions")
+          .select("id", { count: "exact", head: true })
+          .eq("status", "active");
 
-      // Revenue placeholder - da collegare a Stripe quando disponibile
-      const revenue = 1250;
+        // Revenue placeholder - lasciamo vuoto se non ci sono dati reali da Stripe
+        const revenue = null;
 
-      // Growth placeholder - da calcolare con dati reali
-      const growth = 15;
+        // Growth placeholder - lasciamo vuoto se non ci sono dati sufficienti
+        const growth = null;
 
-      setStats({
-        totalUsers: totalUsers ?? null,
-        activeUsers: activeUsers,
-        revenue: revenue,
-        growth: growth,
-      });
+        setStats({
+          totalUsers: totalUsers ?? 0,
+          activeUsers: activeUsers ?? 0,
+          revenue: revenue,
+          growth: growth,
+        });
+      } catch (error) {
+        console.error('Error fetching admin stats:', error);
+        setStats({
+          totalUsers: null,
+          activeUsers: null,
+          revenue: null,
+          growth: null,
+        });
+      }
     };
+    
     fetchStats();
   }, []);
 
