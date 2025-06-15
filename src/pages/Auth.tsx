@@ -18,13 +18,13 @@ export default function Auth() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
-  // Esegui redirect in base al ruolo dell'utente dopo il login
+  // Redirect after login: solo utenti normali, NON admin
   useEffect(() => {
     if (!loading && !roleLoading && user) {
-      if (role === 'admin') {
-        navigate('/admin', { replace: true });
-      } else {
+      if (role === 'user') {
         navigate('/dashboard', { replace: true });
+      } else if (role === 'admin') {
+        navigate('/admin', { replace: true });
       }
     }
   }, [loading, roleLoading, user, role, navigate]);
