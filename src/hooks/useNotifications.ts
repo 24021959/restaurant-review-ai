@@ -7,10 +7,10 @@ export const useNotifications = () => {
   const [notifications] = useState<any[]>([]);
   const [unreadCount] = useState(0);
 
-  // Funzioni stub senza effetto. Potranno essere collegate a dati veri in futuro.
-  const markAsRead = () => {};
+  // Funzioni stub aggiornate per accettare un ID come parametro.
+  const markAsRead = (id?: string) => {};
   const markAllAsRead = () => {};
-  const deleteNotification = () => {};
+  const deleteNotification = (id?: string) => {};
   const loadNotifications = () => {};
 
   return {
