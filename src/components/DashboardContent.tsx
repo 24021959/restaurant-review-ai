@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Calendar, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -5,6 +6,7 @@ import DashboardStats from './DashboardStats';
 import QuickActions from './QuickActions';
 import BusinessProfileManager from './BusinessProfileManager';
 import ReviewsManager from './ReviewsManager';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface DashboardContentProps {
   activeTab: string;
@@ -22,6 +24,7 @@ interface DashboardContentProps {
     satisfactionRate: string;
   };
   restaurantInfo: {
+    name: string;
     avgRating: number;
     totalReviews: number;
     monthlyGrowth: string;
@@ -41,9 +44,37 @@ export default function DashboardContent({
   onTabChange,
   onRefreshData
 }: DashboardContentProps) {
+  const { user } = useAuth();
+
+  const getUserDisplayName = () => {
+    if (user?.user_metadata?.restaurant_name) {
+      return user.user_metadata.restaurant_name;
+    }
+    if (user?.email) {
+      return user.email.split('@')[0];
+    }
+    return 'Utente';
+  };
+
+  const WelcomeMessage = () => (
+    <div className="mb-6 bg-gradient-to-r from-orange-500 to-red-500 text-white rounded-lg p-6 shadow-lg">
+      <div className="flex flex-col space-y-2">
+        <h1 className="text-2xl font-bold">
+          Ciao, {getUserDisplayName()}! 👋
+        </h1>
+        <p className="text-orange-100 text-lg">
+          Benvenuto nella dashboard di <span className="font-semibold">{restaurantInfo.name}</span>
+        </p>
+        <p className="text-orange-200 text-sm">
+          Gestisci le tue recensioni e monitora le performance della tua attività
+        </p>
+      </div>
+    </div>
+  );
 
   const renderDashboard = () => (
     <div className="space-y-6">
+      <WelcomeMessage />
       {/* Rimosso Alert API Over Limit */}
       <DashboardStats
         usageStats={usageStats}
