@@ -6,9 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Plus, Trash2, AlertTriangle, CheckCircle, Key } from 'lucide-react';
+import { Plus, Trash2, AlertTriangle, Key } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ApiKey {
   id: string;
@@ -27,15 +28,21 @@ export default function ApiKeyManager() {
   const [isLoading, setIsLoading] = useState(false);
   const [showAddForm, setShowAddForm] = useState(false);
   const { toast } = useToast();
+  const { user } = useAuth();
 
   useEffect(() => {
-    loadApiKeys();
-  }, []);
+    if (user) {
+      loadApiKeys();
+    }
+  }, [user]);
 
   const loadApiKeys = async () => {
     try {
       const { data, error } = await supabase.functions.invoke('manage-api-keys', {
-        body: { action: 'list' }
+        body: { action: 'list' },
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+        }
       });
       
       if (error) throw error;
@@ -60,6 +67,9 @@ export default function ApiKeyManager() {
           action: 'add',
           name: newKeyName,
           key: newKeyValue
+        },
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
         }
       });
 
@@ -93,6 +103,9 @@ export default function ApiKeyManager() {
           action: 'toggle',
           keyId,
           isActive: !isActive
+        },
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
         }
       });
 
@@ -120,6 +133,9 @@ export default function ApiKeyManager() {
         body: { 
           action: 'delete',
           keyId
+        },
+        headers: {
+          Authorization: `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
         }
       });
 
@@ -142,6 +158,17 @@ export default function ApiKeyManager() {
   const totalUsage = apiKeys.reduce((sum, key) => sum + key.daily_usage, 0);
   const totalLimit = apiKeys.reduce((sum, key) => sum + key.daily_limit, 0);
   const usagePercentage = totalLimit > 0 ? (totalUsage / totalLimit) * 100 : 0;
+
+  if (!user) {
+    return (
+      <Alert>
+        <AlertTriangle className="h-4 w-4" />
+        <AlertDescription>
+          Devi essere autenticato per gestire le chiavi API.
+        </AlertDescription>
+      </Alert>
+    );
+  }
 
   return (
     <div className="space-y-6">

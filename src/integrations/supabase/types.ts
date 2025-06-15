@@ -47,6 +47,77 @@ export type Database = {
           },
         ]
       }
+      api_usage_logs: {
+        Row: {
+          api_key_id: string
+          created_at: string | null
+          id: string
+          request_type: string | null
+          used_at: string | null
+        }
+        Insert: {
+          api_key_id: string
+          created_at?: string | null
+          id?: string
+          request_type?: string | null
+          used_at?: string | null
+        }
+        Update: {
+          api_key_id?: string
+          created_at?: string | null
+          id?: string
+          request_type?: string | null
+          used_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_usage_logs_api_key_id_fkey"
+            columns: ["api_key_id"]
+            isOneToOne: false
+            referencedRelation: "google_api_keys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      google_api_keys: {
+        Row: {
+          created_at: string | null
+          daily_limit: number | null
+          encrypted_key: string
+          id: string
+          is_active: boolean | null
+          last_used_at: string | null
+          name: string
+          total_requests: number | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          daily_limit?: number | null
+          encrypted_key: string
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          name: string
+          total_requests?: number | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          daily_limit?: number | null
+          encrypted_key?: string
+          id?: string
+          is_active?: boolean | null
+          last_used_at?: string | null
+          name?: string
+          total_requests?: number | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null

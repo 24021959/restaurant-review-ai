@@ -1,6 +1,7 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface ApiKeyStatus {
   id: string;
@@ -31,17 +32,28 @@ export const useApiKeyRotation = (): ApiKeyRotationHook => {
   const [apiKeys, setApiKeys] = useState<ApiKeyStatus[]>([]);
   const [currentKeyIndex, setCurrentKeyIndex] = useState(0);
   const [isOverLimit, setIsOverLimit] = useState(false);
+  const { user } = useAuth();
 
   // Carica le API keys dal database
   useEffect(() => {
-    loadApiKeys();
-    const interval = setInterval(loadApiKeys, 60000); // Aggiorna ogni minuto
-    return () => clearInterval(interval);
-  }, []);
+    if (user) {
+      loadApiKeys();
+      const interval = setInterval(loadApiKeys, 60000); // Aggiorna ogni minuto
+      return () => clearInterval(interval);
+    }
+  }, [user]);
 
   const loadApiKeys = async () => {
+    if (!user) return;
+    
     try {
-      const { data, error } = await supabase.functions.invoke('get-api-keys-status');
+      const session = await supabase.auth.getSession();
+      const { data, error } = await supabase.functions.invoke('get-api-keys-status', {
+        headers: {
+          Authorization: `Bearer ${session.data.session?.access_token}`
+        }
+      });
+      
       if (error) throw error;
       
       setApiKeys(data.keys || []);
@@ -73,8 +85,12 @@ export const useApiKeyRotation = (): ApiKeyRotationHook => {
 
   const recordUsage = async (keyId: string): Promise<void> => {
     try {
+      const session = await supabase.auth.getSession();
       await supabase.functions.invoke('record-api-usage', {
-        body: { keyId, timestamp: new Date().toISOString() }
+        body: { keyId, timestamp: new Date().toISOString() },
+        headers: {
+          Authorization: `Bearer ${session.data.session?.access_token}`
+        }
       });
       
       // Aggiorna lo stato locale

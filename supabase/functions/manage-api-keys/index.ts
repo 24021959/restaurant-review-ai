@@ -18,30 +18,91 @@ serve(async (req) => {
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? ""
     );
 
-    const authHeader = req.headers.get("Authorization")!;
-    const token = authHeader.replace("Bearer ", "");
-    const { data: userData } = await supabaseClient.auth.getUser(token);
-    const user = userData.user;
-    
-    if (!user) throw new Error("User not authenticated");
+    const authHeader = req.headers.get('Authorization')!;
+    const token = authHeader.replace('Bearer ', '');
+    const { data: { user } } = await supabaseClient.auth.getUser(token);
 
-    const { action, ...body } = await req.json();
+    if (!user) {
+      throw new Error('Unauthorized');
+    }
+
+    const { action, ...params } = await req.json();
 
     switch (action) {
       case 'list':
-        return await listApiKeys(supabaseClient, user.id);
-      
+        const { data: keys } = await supabaseClient
+          .from('google_api_keys')
+          .select('id, name, encrypted_key, is_active, daily_limit, total_requests, created_at')
+          .eq('user_id', user.id)
+          .order('created_at', { ascending: false });
+
+        const processedKeys = keys?.map(key => ({
+          ...key,
+          key_preview: key.encrypted_key.substring(0, 8),
+          daily_usage: Math.floor(Math.random() * key.daily_limit * 0.7) // Simulazione usage
+        })) || [];
+
+        return new Response(
+          JSON.stringify({ keys: processedKeys }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+
       case 'add':
-        return await addApiKey(supabaseClient, user.id, body);
-      
+        const { name, key } = params;
+        
+        const { data: newKey, error: insertError } = await supabaseClient
+          .from('google_api_keys')
+          .insert({
+            user_id: user.id,
+            name,
+            encrypted_key: key, // In produzione dovrebbe essere criptata
+            is_active: true,
+            daily_limit: 10000
+          })
+          .select()
+          .single();
+
+        if (insertError) throw insertError;
+
+        return new Response(
+          JSON.stringify({ success: true, key: newKey }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+
       case 'toggle':
-        return await toggleApiKey(supabaseClient, user.id, body);
-      
+        const { keyId, isActive } = params;
+        
+        const { error: toggleError } = await supabaseClient
+          .from('google_api_keys')
+          .update({ is_active: isActive })
+          .eq('id', keyId)
+          .eq('user_id', user.id);
+
+        if (toggleError) throw toggleError;
+
+        return new Response(
+          JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+
       case 'delete':
-        return await deleteApiKey(supabaseClient, user.id, body);
-      
+        const { keyId: deleteKeyId } = params;
+        
+        const { error: deleteError } = await supabaseClient
+          .from('google_api_keys')
+          .delete()
+          .eq('id', deleteKeyId)
+          .eq('user_id', user.id);
+
+        if (deleteError) throw deleteError;
+
+        return new Response(
+          JSON.stringify({ success: true }),
+          { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+        );
+
       default:
-        throw new Error("Invalid action");
+        throw new Error('Invalid action');
     }
 
   } catch (error) {
@@ -54,79 +115,3 @@ serve(async (req) => {
     );
   }
 });
-
-async function listApiKeys(supabase: any, userId: string) {
-  const { data: keys, error } = await supabase
-    .from('google_api_keys')
-    .select('*')
-    .eq('user_id', userId)
-    .order('created_at', { ascending: false });
-
-  if (error) throw error;
-
-  // Aggiungi informazioni di utilizzo (simulato per ora)
-  const keysWithUsage = keys.map((key: any) => ({
-    ...key,
-    key_preview: key.encrypted_key?.substring(0, 8),
-    daily_usage: Math.floor(Math.random() * key.daily_limit), // TODO: implementare tracking reale
-    daily_limit: 10000 // Limite standard Google Business API
-  }));
-
-  return new Response(
-    JSON.stringify({ keys: keysWithUsage }),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-  );
-}
-
-async function addApiKey(supabase: any, userId: string, { name, key }: any) {
-  // Cripta la chiave (implementazione semplificata)
-  const encryptedKey = btoa(key); // TODO: implementare crittografia reale
-  
-  const { data, error } = await supabase
-    .from('google_api_keys')
-    .insert({
-      user_id: userId,
-      name,
-      encrypted_key: encryptedKey,
-      is_active: true
-    })
-    .select()
-    .single();
-
-  if (error) throw error;
-
-  return new Response(
-    JSON.stringify({ success: true, key: data }),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-  );
-}
-
-async function toggleApiKey(supabase: any, userId: string, { keyId, isActive }: any) {
-  const { error } = await supabase
-    .from('google_api_keys')
-    .update({ is_active: isActive })
-    .eq('id', keyId)
-    .eq('user_id', userId);
-
-  if (error) throw error;
-
-  return new Response(
-    JSON.stringify({ success: true }),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-  );
-}
-
-async function deleteApiKey(supabase: any, userId: string, { keyId }: any) {
-  const { error } = await supabase
-    .from('google_api_keys')
-    .delete()
-    .eq('id', keyId)
-    .eq('user_id', userId);
-
-  if (error) throw error;
-
-  return new Response(
-    JSON.stringify({ success: true }),
-    { headers: { ...corsHeaders, "Content-Type": "application/json" } }
-  );
-}
