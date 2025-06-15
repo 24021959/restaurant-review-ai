@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Calendar, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -6,6 +5,7 @@ import ApiKeyManager from './ApiKeyManager';
 import ReviewsManager from './ReviewsManager';
 import DashboardStats from './DashboardStats';
 import QuickActions from './QuickActions';
+import BusinessProfileManager from './BusinessProfileManager';
 
 interface DashboardContentProps {
   activeTab: string;
@@ -114,6 +114,13 @@ export default function DashboardContent({
     </div>
   );
 
+  const renderBusinessProfile = () => (
+    <div>
+      <h2 className="text-2xl font-bold mb-4">Profilo azienda & documenti</h2>
+      <BusinessProfileManager />
+    </div>
+  );
+
   switch (activeTab) {
     case 'dashboard':
       return renderDashboard();
@@ -121,6 +128,8 @@ export default function DashboardContent({
       return <ReviewsManager />;
     case 'settings':
       return renderSettings();
+    case 'profile':
+      return renderBusinessProfile();
     default:
       return renderDashboard();
   }

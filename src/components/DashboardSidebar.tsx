@@ -23,6 +23,11 @@ export default function DashboardSidebar({ activeTab, onTabChange }: DashboardSi
       id: 'settings',
       label: 'Impostazioni',
       icon: Settings
+    },
+    {
+      id: 'profile',
+      label: 'Profilo Attività',
+      icon: Settings // meglio sostituirla con qualcosa tipo "User" se desideri!
     }
   ];
 

@@ -79,6 +79,80 @@ export type Database = {
           },
         ]
       }
+      business_documents: {
+        Row: {
+          business_profile_id: string
+          content: string
+          created_at: string | null
+          id: string
+          title: string
+          type: string | null
+        }
+        Insert: {
+          business_profile_id: string
+          content: string
+          created_at?: string | null
+          id?: string
+          title: string
+          type?: string | null
+        }
+        Update: {
+          business_profile_id?: string
+          content?: string
+          created_at?: string | null
+          id?: string
+          title?: string
+          type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "business_documents_business_profile_id_fkey"
+            columns: ["business_profile_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      business_profiles: {
+        Row: {
+          address: string | null
+          business_description: string | null
+          business_name: string
+          communication_style: string | null
+          created_at: string | null
+          id: string
+          phone: string | null
+          updated_at: string | null
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          business_description?: string | null
+          business_name: string
+          communication_style?: string | null
+          created_at?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          business_description?: string | null
+          business_name?: string
+          communication_style?: string | null
+          created_at?: string | null
+          id?: string
+          phone?: string | null
+          updated_at?: string | null
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
       google_api_keys: {
         Row: {
           created_at: string | null
