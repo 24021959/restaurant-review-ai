@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext"; // AGGIUNTA!
 
 type BusinessProfile = {
   id: string;
@@ -28,6 +29,7 @@ const communicationOptions = [
 ];
 
 export default function BusinessProfileManager() {
+  const { user } = useAuth(); // AGGIUNTA!
   const [profile, setProfile] = useState<BusinessProfile | null>(null);
   const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -40,19 +42,17 @@ export default function BusinessProfileManager() {
     communication_style: "formale",
   });
 
-  // --- Documenti FAQ
   const [documents, setDocuments] = useState<BusinessDocument[]>([]);
   const [docForm, setDocForm] = useState<{title: string; content: string}>({title: "", content: ""});
   const [docLoading, setDocLoading] = useState(false);
 
-  // Fetch profilo aziendale
   useEffect(() => {
     (async () => {
       setLoading(true);
       const { data, error } = await supabase
         .from("business_profiles")
         .select("*")
-        .single();
+        .maybeSingle(); // CAMBIATO per evitare errori se non esiste il profilo
       if (data) {
         setProfile(data);
         setForm({
@@ -63,7 +63,6 @@ export default function BusinessProfileManager() {
           address: data.address || "",
           communication_style: data.communication_style || "formale",
         });
-        // Carica documenti
         const { data: docs } = await supabase
           .from("business_documents")
           .select("*")
@@ -74,11 +73,15 @@ export default function BusinessProfileManager() {
     })();
   }, []);
 
-  // Salva/aggiorna profilo
   async function handleSaveProfile(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     let res;
+    if (!user?.id) {
+      alert("Utente non autenticato. Effettua il login.");
+      setLoading(false);
+      return;
+    }
     if (profile) {
       res = await supabase
         .from("business_profiles")
@@ -89,7 +92,7 @@ export default function BusinessProfileManager() {
     } else {
       res = await supabase
         .from("business_profiles")
-        .insert({ ...form })
+        .insert({ ...form, user_id: user.id }) // AGGIUNTO user_id
         .select()
         .single();
     }
@@ -100,7 +103,6 @@ export default function BusinessProfileManager() {
     setLoading(false);
   }
 
-  // Gestione documenti FAQ
   async function handleAddDocument(e: React.FormEvent) {
     e.preventDefault();
     if (!profile) return alert("Prima compila il profilo attività");
