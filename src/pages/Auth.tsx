@@ -9,7 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { useToast } from '@/hooks/use-toast';
 
 export default function Auth() {
-  const { user, signIn, signUp, loading, resetPassword } = useAuth();
+  const { user, signIn, signUp, loading, resetPassword, signOut } = useAuth();
   const { role, loading: roleLoading } = useUserRole();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -19,16 +19,24 @@ export default function Auth() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Redirect after login: solo utenti normali, NON admin
+  // Redirect after login
   useEffect(() => {
     if (!loading && !roleLoading && user) {
-      if (role === 'user') {
+      if (role === 'admin') {
+        const handleAdminLoginAttempt = async () => {
+          await signOut();
+          toast({
+            title: "Accesso Amministratore",
+            description: "Per favore, utilizza la pagina di accesso dedicata agli amministratori.",
+            variant: "destructive",
+          });
+        };
+        handleAdminLoginAttempt();
+      } else if (role === 'user') {
         navigate('/dashboard', { replace: true });
-      } else if (role === 'admin') {
-        navigate('/admin', { replace: true });
       }
     }
-  }, [loading, roleLoading, user, role, navigate]);
+  }, [loading, roleLoading, user, role, navigate, signOut, toast]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

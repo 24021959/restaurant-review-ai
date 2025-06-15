@@ -9,6 +9,8 @@ export const useUserRole = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    setLoading(true); // Assicura che lo stato di caricamento sia attivo durante il fetch
+
     const fetchUserRole = async () => {
       if (!user) {
         setRole(null);
