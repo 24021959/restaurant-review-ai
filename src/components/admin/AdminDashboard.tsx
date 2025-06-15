@@ -1,20 +1,34 @@
 
-import React from 'react';
+import React from "react";
+import AdminStats from "./AdminStats";
+import RealUserManagement from "./RealUserManagement";
+import SubscriptionManagement from "./SubscriptionManagement";
+import AllApiKeysManager from "./AllApiKeysManager";
+import SystemSettings from "./SystemSettings";
 
 export default function AdminDashboard() {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="text-center space-y-6">
-        <h1 className="text-2xl font-bold text-gray-900">
-          🔧 Pannello Amministratore
-        </h1>
-        <p className="text-gray-600">
-          In questa sezione visualizzerai le metriche e la gestione utenti/abbonamenti reali non appena disponibili.
-        </p>
-        <div className="text-orange-500 font-semibold">
-          Nessun dato disponibile. Tutte le funzioni sono in attesa di collegamento ai dati reali.
-        </div>
-      </div>
+    <div className="min-h-screen bg-gray-50 p-6 space-y-8">
+      {/* Sezione statistiche */}
+      <section>
+        <AdminStats />
+      </section>
+      {/* Gestione utenti reali */}
+      <section>
+        <RealUserManagement />
+      </section>
+      {/* Gestione abbonamenti */}
+      <section>
+        <SubscriptionManagement />
+      </section>
+      {/* Gestione completa API Keys */}
+      <section>
+        <AllApiKeysManager />
+      </section>
+      {/* Impostazioni sistema */}
+      <section>
+        <SystemSettings />
+      </section>
     </div>
   );
 }
