@@ -121,6 +121,7 @@ export type Database = {
           business_name: string
           communication_style: string | null
           created_at: string | null
+          custom_communication_style: string | null
           id: string
           phone: string | null
           updated_at: string | null
@@ -133,6 +134,7 @@ export type Database = {
           business_name: string
           communication_style?: string | null
           created_at?: string | null
+          custom_communication_style?: string | null
           id?: string
           phone?: string | null
           updated_at?: string | null
@@ -145,6 +147,7 @@ export type Database = {
           business_name?: string
           communication_style?: string | null
           created_at?: string | null
+          custom_communication_style?: string | null
           id?: string
           phone?: string | null
           updated_at?: string | null

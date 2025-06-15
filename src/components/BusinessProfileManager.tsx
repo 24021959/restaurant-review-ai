@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -67,8 +66,7 @@ export default function BusinessProfileManager() {
           phone: data.phone || "",
           address: data.address || "",
           communication_style: data.communication_style || "formale",
-          // If custom_communication_style does not exist in the data, fall back to empty string
-          custom_communication_style: (data as any).custom_communication_style || "",
+          custom_communication_style: data.custom_communication_style || "",
         });
         const { data: docs } = await supabase
           .from("business_documents")
