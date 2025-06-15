@@ -51,7 +51,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, restaurantName: string) => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = "https://restaurant-review-ai.lovable.app/"; // URL corretto per l'app pubblica
       
       const { error } = await supabase.auth.signUp({
         email,
