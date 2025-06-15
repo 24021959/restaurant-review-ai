@@ -1,7 +1,11 @@
+
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+
+// Define the public URL constant to be used across auth functions
+const PUBLIC_APP_URL = "https://restaurant-review-ai.lovable.app";
 
 interface AuthContextType {
   user: User | null;
@@ -51,7 +55,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, restaurantName: string) => {
     try {
-      const redirectUrl = "https://restaurant-review-ai.lovable.app/"; // URL corretto per l'app pubblica
+      const redirectUrl = `${PUBLIC_APP_URL}/`;
       
       const { error } = await supabase.auth.signUp({
         email,
@@ -125,7 +129,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const resetPassword = async (email: string, redirectTo?: string) => {
     try {
-      const redirectUrl = redirectTo || `${window.location.origin}/auth`;
+      const redirectUrl = redirectTo
+        ? redirectTo.replace(window.location.origin, PUBLIC_APP_URL)
+        : `${PUBLIC_APP_URL}/auth`;
+        
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: redirectUrl,
       });
