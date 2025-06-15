@@ -1,6 +1,5 @@
 
 import React from 'react';
-
 interface DashboardStatsProps {
   usageStats: {
     totalDailyUsage: number;
@@ -21,17 +20,65 @@ interface DashboardStatsProps {
     monthlyGrowth: string;
   };
 }
-
 export default function DashboardStats({
   dashboardStats,
-  restaurantInfo
+  restaurantInfo,
+  usageStats
 }: DashboardStatsProps) {
-  // Mostra solo stato vuoto se nessun dato reale
+  // Placeholder statistici, da sostituire con dati reali
   return (
-    <div className="w-full my-10 flex flex-col items-center">
-      <p className="text-orange-500 text-center">
-        Nessuna statistica disponibile. Compila i dati della tua attività per visualizzare le metriche reali.
-      </p>
+    <div className="w-full my-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {/* Stat principale: andamento recensioni */}
+      <div className="bg-white rounded-lg p-6 shadow flex flex-col items-start justify-between min-h-[170px]">
+        <h4 className="text-orange-600 font-bold mb-2">Recensioni totali</h4>
+        <div className="text-3xl font-bold mb-1">
+          {restaurantInfo.totalReviews ?? "--"}
+        </div>
+        <div className="text-gray-500 text-sm">Andamento: {restaurantInfo.monthlyGrowth ?? "--"}</div>
+      </div>
+      {/* Stat: media voto */}
+      <div className="bg-white rounded-lg p-6 shadow flex flex-col items-start justify-between min-h-[170px]">
+        <h4 className="text-orange-600 font-bold mb-2">Voto medio</h4>
+        <div className="text-3xl font-bold mb-1">
+          {restaurantInfo.avgRating ?? "--"}
+        </div>
+        <div className="text-gray-500 text-sm">Basato sulle recensioni ricevute</div>
+      </div>
+      {/* Stat: risposte utente */}
+      <div className="bg-white rounded-lg p-6 shadow flex flex-col items-start justify-between min-h-[170px]">
+        <h4 className="text-orange-600 font-bold mb-2">Recensioni da rispondere</h4>
+        <div className="text-3xl font-bold mb-1">{dashboardStats.pendingReviews ?? "--"}</div>
+        <div className="text-gray-500 text-sm">Risposte inviate oggi: {dashboardStats.respondedToday ?? "--"}</div>
+      </div>
+      {/* Utilizzo API/trial */}
+      <div className="bg-white rounded-lg p-6 shadow flex flex-col items-start justify-between min-h-[170px] col-span-1 md:col-span-2">
+        <h4 className="text-orange-600 font-bold mb-2">Utilizzo App</h4>
+        <div className="flex items-center space-x-12 mb-2 w-full">
+          <div>
+            <div className="font-bold text-xl">{usageStats.totalDailyUsage ?? "--"}</div>
+            <div className="text-gray-400 text-xs">Utilizzo giornaliero</div>
+          </div>
+          <div>
+            <div className="font-bold text-xl">{usageStats.totalKeys ?? "--"}</div>
+            <div className="text-gray-400 text-xs">Chiavi API totali</div>
+          </div>
+          <div>
+            <div className="font-bold text-xl">{usageStats.activeKeys ?? "--"}</div>
+            <div className="text-gray-400 text-xs">Chiavi attive</div>
+          </div>
+        </div>
+        <div className="text-gray-400 text-xs">Media utilizzo: {usageStats.averageUsage ?? "--"}</div>
+      </div>
+      {/* Cronologia attività (placeholder) */}
+      <div className="bg-white rounded-lg p-6 shadow flex flex-col items-start justify-between min-h-[170px] md:col-span-2 lg:col-span-3">
+        <h4 className="text-orange-600 font-bold mb-2">Cronologia attività</h4>
+        <div className="text-gray-500 text-sm">Nessuna attività registrata al momento.</div>
+      </div>
+      {/* Prossimi sviluppi */}
+      <div className="bg-white rounded-lg p-6 shadow flex flex-col items-start justify-between min-h-[100px] md:col-span-2 lg:col-span-3">
+        <h4 className="text-orange-600 font-bold mb-2">Prossimamente...</h4>
+        <div className="text-gray-500 text-sm">Qui troverai nuovi indicatori e funzionalità non appena disponibili!</div>
+      </div>
     </div>
   );
 }

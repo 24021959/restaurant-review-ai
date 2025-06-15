@@ -28,8 +28,10 @@ export default function DashboardHeader({ restaurantInfo, onLogout }: DashboardH
             <div className="ml-8">
               <div className="flex items-center space-x-2">
                 <MapPin className="h-4 w-4 text-gray-500" />
-                <span className="text-sm font-medium text-gray-700">{restaurantInfo.name}</span>
-                <span className="text-sm text-gray-500">• {restaurantInfo.location}</span>
+                <span className="text-sm font-medium text-gray-700" data-testid="restaurant-name">
+                  {restaurantInfo.name ?? "-"}
+                </span>
+                <span className="text-sm text-gray-500">• {restaurantInfo.location ?? "-"}</span>
               </div>
             </div>
             <button
@@ -47,8 +49,8 @@ export default function DashboardHeader({ restaurantInfo, onLogout }: DashboardH
                 <span className="text-white text-xs font-bold">G</span>
               </div>
               <Star className="h-4 w-4 text-yellow-400 fill-current" />
-              <span className="font-medium">{restaurantInfo.avgRating}</span>
-              <span>({restaurantInfo.totalReviews} recensioni)</span>
+              <span className="font-medium">{restaurantInfo.avgRating ?? "-"}</span>
+              <span>({restaurantInfo.totalReviews ?? 0} recensioni)</span>
             </div>
             <NotificationDropdown />
             <button 
