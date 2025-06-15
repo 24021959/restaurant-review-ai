@@ -9,7 +9,7 @@ export default function AdminHeader() {
   const navigate = useNavigate();
 
   return (
-    <header className="w-full flex justify-between items-center bg-white border-b shadow-sm px-6 py-4 mb-6">
+    <header className="w-full flex justify-between items-center bg-white border-b shadow-sm px-6 py-6 mb-6">
       <div className="flex items-center gap-4">
         <button
           className="flex items-center gap-2"
@@ -17,7 +17,7 @@ export default function AdminHeader() {
           title="Vai alla home"
         >
           <Home className="w-5 h-5 text-orange-600" />
-          <img src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" alt="RistoReply Admin" className="h-8 w-auto bg-transparent" />
+          <img src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" alt="RistoReply Admin" className="h-12 w-auto bg-transparent" />
           <span className="text-orange-700 text-sm font-medium">Admin</span>
         </button>
       </div>

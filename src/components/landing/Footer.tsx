@@ -6,7 +6,14 @@ export default function Footer() {
     <footer className="bg-gray-900 text-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center">
-          <h3 className="text-2xl font-bold text-orange-600 mb-4">🍝 RistoReply</h3>
+          <div className="flex justify-center items-center mb-4">
+            <img 
+              src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" 
+              alt="RistoReply" 
+              className="h-12 w-auto bg-transparent" 
+            />
+            <span className="text-2xl font-bold text-orange-600 ml-2">RistoReply</span>
+          </div>
           <p className="text-gray-400 mb-4">
             L'intelligenza artificiale per la gestione recensioni Google del tuo ristorante
           </p>

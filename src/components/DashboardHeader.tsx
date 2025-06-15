@@ -19,13 +19,13 @@ export default function DashboardHeader({ restaurantInfo, onLogout }: DashboardH
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
             <div className="flex-shrink-0">
               <img 
                 src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" 
                 alt="RistoReply" 
-                className="h-8 w-auto bg-transparent cursor-pointer" 
+                className="h-12 w-auto bg-transparent cursor-pointer" 
                 onClick={() => navigate('/')} 
               />
             </div>

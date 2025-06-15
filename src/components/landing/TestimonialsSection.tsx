@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Star } from 'lucide-react';
 import {
@@ -22,7 +23,7 @@ export default function TestimonialsSection() {
       restaurant: "Trattoria La Nonna",
       text: "Finalmente posso concentrarmi sulla cucina mentre RistoReply si occupa delle recensioni. Semplicemente fantastico!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1594736797933-d0d501ba2fe6?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1551218372-a8789b81b253?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Andrea Conti",
@@ -50,14 +51,14 @@ export default function TestimonialsSection() {
       restaurant: "La Tavola della Nonna",
       text: "Non devo più preoccuparmi delle recensioni negative. L'AI risponde sempre in modo professionale e cortese.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1594736797933-d0d501ba2fe6?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Giuseppe Lombardi",
       restaurant: "Osteria del Mare",
       text: "Incredibile come sia riuscito a liberare tempo per quello che amo davvero: cucinare per i miei clienti!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=150&h=150&fit=crop&crop=center"
     },
     {
       name: "Elena Ricci",
