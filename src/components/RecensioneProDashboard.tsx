@@ -32,7 +32,6 @@ export default function RecensioneProDashboard() {
     fetchProfile();
   }, [user]);
 
-  // Fetch subscription
   useEffect(() => {
     async function fetchSubscription() {
       if (!user) {
@@ -57,12 +56,10 @@ export default function RecensioneProDashboard() {
     monthlyGrowth: businessProfile ? "–" : "–"
   };
 
-  // Refactor logout per redirezionare home
   const handleLogout = () => {
     signOut(() => navigate("/"));
   };
 
-  // Nessun dato finto dashboardStats
   const dashboardStats = {
     pendingReviews: 0,
     respondedToday: 0,
@@ -81,42 +78,48 @@ export default function RecensioneProDashboard() {
   const showCompleteProfile =
     (!businessProfile && (activeTab === 'dashboard' || activeTab === 'settings'));
 
-  // Take trialEndsAt from subscription (if available)
   const trialEndsAt = subscription?.trial_ends_at || null;
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <DashboardHeader 
+      <DashboardHeader
         restaurantInfo={restaurantInfo}
         onLogout={handleLogout}
       />
       <div className="md:flex">
-        <DashboardSidebar 
+        <DashboardSidebar
           activeTab={activeTab}
           onTabChange={setActiveTab}
         />
         <main className="flex-1 py-6 px-4">
           <TrialStatusAlert trialEndsAt={trialEndsAt} />
-          {showCompleteProfile ? (
-            <div className="max-w-2xl mx-auto mt-20">
-              <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-6 mb-8 text-center">
-                <h2 className="text-xl font-bold text-yellow-800 mb-2">Completa il tuo profilo attività</h2>
-                <p className="mb-4 text-yellow-700">Per accedere alle funzionalità, inserisci i dati della tua attività qui sotto.</p>
+          {
+            // Modifica: mostro impostazioni SOLO nel tab 'settings', dashboard è pulita!
+            activeTab === 'settings' ? (
+              <div className="max-w-2xl mx-auto mt-8">
+                <BusinessProfileManager />
               </div>
-              <BusinessProfileManager />
-            </div>
-          ) : (
-            <DashboardContent
-              activeTab={activeTab}
-              usageStats={usageStats}
-              isOverLimit={isOverLimit}
-              dashboardStats={dashboardStats}
-              restaurantInfo={restaurantInfo}
-              loading={false}
-              onTabChange={setActiveTab}
-              onRefreshData={() => {}}
-            />
-          )}
+            ) : showCompleteProfile ? (
+              <div className="max-w-2xl mx-auto mt-20">
+                <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-6 mb-8 text-center">
+                  <h2 className="text-xl font-bold text-yellow-800 mb-2">Completa il tuo profilo attività</h2>
+                  <p className="mb-4 text-yellow-700">Per accedere alle funzionalità, inserisci i dati della tua attività qui sotto.</p>
+                </div>
+                <BusinessProfileManager />
+              </div>
+            ) : (
+              <DashboardContent
+                activeTab={activeTab}
+                usageStats={usageStats}
+                isOverLimit={isOverLimit}
+                dashboardStats={dashboardStats}
+                restaurantInfo={restaurantInfo}
+                loading={false}
+                onTabChange={setActiveTab}
+                onRefreshData={() => { }}
+              />
+            )
+          }
         </main>
       </div>
     </div>

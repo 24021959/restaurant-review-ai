@@ -1,42 +1,16 @@
+
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext";
-
-type BusinessProfile = {
-  id: string;
-  business_name: string;
-  business_description: string;
-  website: string;
-  phone: string;
-  address: string;
-  communication_style: string;
-  custom_communication_style?: string;
-};
-
-type BusinessDocument = {
-  id: string;
-  title: string;
-  content: string;
-  type: string;
-};
-
-const communicationOptions = [
-  { value: "formale", label: "Formale" },
-  { value: "informale", label: "Informale" },
-  { value: "cordiale", label: "Cordiale" },
-  { value: "amichevole", label: "Amichevole" },
-  { value: "diretto", label: "Diretto" },
-  { value: "personalizzato", label: "Personalizzato" },
-];
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import BusinessProfileTab from "./settings/BusinessProfileTab";
+import ToneTab from "./settings/ToneTab";
+import KnowledgeTab from "./settings/KnowledgeTab";
 
 export default function BusinessProfileManager() {
-  const { user } = useAuth();
-  const [profile, setProfile] = useState<BusinessProfile | null>(null);
+  const [profile, setProfile] = useState<any | null>(null);
   const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
-  const [form, setForm] = useState<Omit<BusinessProfile, "id">>({
+  const [form, setForm] = useState<any>({
     business_name: "",
     business_description: "",
     website: "",
@@ -45,10 +19,9 @@ export default function BusinessProfileManager() {
     communication_style: "formale",
     custom_communication_style: "",
   });
-
-  const [documents, setDocuments] = useState<BusinessDocument[]>([]);
-  const [docForm, setDocForm] = useState<{title: string; content: string}>({title: "", content: ""});
-  const [docLoading, setDocLoading] = useState(false);
+  const [website, setWebsite] = useState('');
+  const [extractedTexts, setExtractedTexts] = useState<string[]>([]);
+  const [documents, setDocuments] = useState<any[]>([]);
 
   useEffect(() => {
     (async () => {
@@ -68,6 +41,7 @@ export default function BusinessProfileManager() {
           communication_style: data.communication_style || "formale",
           custom_communication_style: data.custom_communication_style || "",
         });
+        setWebsite(data.website || "");
         const { data: docs } = await supabase
           .from("business_documents")
           .select("*")
@@ -82,22 +56,17 @@ export default function BusinessProfileManager() {
     e.preventDefault();
     setLoading(true);
     let res;
-    if (!user?.id) {
-      alert("Utente non autenticato. Effettua il login.");
-      setLoading(false);
-      return;
-    }
-    if (profile) {
+    if (!profile) {
       res = await supabase
         .from("business_profiles")
-        .update(form)
-        .eq("id", profile.id)
+        .insert(form)
         .select()
         .single();
     } else {
       res = await supabase
         .from("business_profiles")
-        .insert({ ...form, user_id: user.id })
+        .update(form)
+        .eq("id", profile.id)
         .select()
         .single();
     }
@@ -108,165 +77,61 @@ export default function BusinessProfileManager() {
     setLoading(false);
   }
 
-  async function handleAddDocument(e: React.FormEvent) {
-    e.preventDefault();
+  async function handleAddDocument(title: string, content: string) {
     if (!profile) return alert("Prima compila il profilo attività");
-    setDocLoading(true);
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("business_documents")
       .insert({
         business_profile_id: profile.id,
-        title: docForm.title,
-        content: docForm.content,
+        title,
+        content,
         type: "faq",
       })
       .select()
       .single();
-    if (data) {
-      setDocuments((docs) => [...docs, data]);
-      setDocForm({ title: "", content: "" });
-    }
-    setDocLoading(false);
+    if (data) setDocuments(docs => [...docs, data]);
   }
 
   async function handleDeleteDocument(docId: string) {
     await supabase.from("business_documents").delete().eq("id", docId);
-    setDocuments((docs) => docs.filter((d) => d.id !== docId));
+    setDocuments(docs => docs.filter(d => d.id !== docId));
   }
 
   if (loading) return <div className="p-6 text-center">Caricamento…</div>;
 
   return (
-    <div className="max-w-2xl mx-auto mt-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>Profilo Attività</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {(!edit && profile) ? (
-            <div className="mb-4 space-y-2">
-              <div><b>Nome:</b> {profile.business_name}</div>
-              {profile.business_description && <div><b>Descrizione:</b> {profile.business_description}</div>}
-              {profile.website && <div><b>Sito:</b> {profile.website}</div>}
-              {profile.phone && <div><b>Telefono:</b> {profile.phone}</div>}
-              {profile.address && <div><b>Indirizzo:</b> {profile.address}</div>}
-              <div><b>Tono comunicazione:</b> {profile.communication_style === "personalizzato" ? profile.custom_communication_style : profile.communication_style}</div>
-              <Button onClick={() => setEdit(true)} className="mt-4">Modifica Profilo</Button>
-            </div>
-          ) : (
-            <form className="space-y-3" onSubmit={handleSaveProfile}>
-              <div>
-                <label className="block text-sm font-medium">Nome attività *</label>
-                <input
-                  className="input border rounded w-full p-2"
-                  required
-                  value={form.business_name}
-                  onChange={e => setForm(f => ({...f, business_name: e.target.value}))}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Descrizione</label>
-                <textarea
-                  className="input border rounded w-full p-2"
-                  value={form.business_description}
-                  onChange={e => setForm(f => ({...f, business_description: e.target.value}))}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Sito web</label>
-                <input
-                  className="input border rounded w-full p-2"
-                  value={form.website}
-                  onChange={e => setForm(f => ({...f, website: e.target.value}))}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Telefono</label>
-                <input
-                  className="input border rounded w-full p-2"
-                  value={form.phone}
-                  onChange={e => setForm(f => ({...f, phone: e.target.value}))}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Indirizzo</label>
-                <input
-                  className="input border rounded w-full p-2"
-                  value={form.address}
-                  onChange={e => setForm(f => ({...f, address: e.target.value}))}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium">Tono comunicazione</label>
-                <select
-                  className="border rounded w-full p-2"
-                  value={form.communication_style}
-                  onChange={e => setForm(f => ({
-                    ...f,
-                    communication_style: e.target.value,
-                    // reset custom field if esci da personalizzato
-                    custom_communication_style: e.target.value === "personalizzato" ? f.custom_communication_style : ""
-                  }))}
-                >
-                  {communicationOptions.map(opt => (
-                    <option key={opt.value} value={opt.value}>{opt.label}</option>
-                  ))}
-                </select>
-              </div>
-              {/* Se personalizzato mostra campo testo */}
-              {form.communication_style === "personalizzato" && (
-                <div>
-                  <label className="block text-sm font-medium">Descrivi il tuo stile personalizzato</label>
-                  <input
-                    className="input border rounded w-full p-2"
-                    value={form.custom_communication_style}
-                    required
-                    onChange={e => setForm(f => ({...f, custom_communication_style: e.target.value}))}
-                    maxLength={120}
-                  />
-                </div>
-              )}
-              <div className="flex gap-2 mt-3">
-                <Button type="submit" disabled={loading}>Salva Profilo</Button>
-                {profile && (
-                  <Button variant="outline" type="button" onClick={() => setEdit(false)}>Annulla</Button>
-                )}
-              </div>
-            </form>
-          )}
-
-          <hr className="my-6" />
-          <div>
-            <h4 className="font-semibold mb-2">Documenti/FAQ dell'attività</h4>
-            <form className="flex flex-col md:flex-row gap-3 mb-4" onSubmit={handleAddDocument}>
-              <input
-                className="input border rounded p-2 flex-1"
-                placeholder="Titolo"
-                required
-                value={docForm.title}
-                onChange={e => setDocForm(f => ({...f, title: e.target.value}))}
-              />
-              <input
-                className="input border rounded p-2 flex-1"
-                placeholder="Contenuto FAQ o altro"
-                required
-                value={docForm.content}
-                onChange={e => setDocForm(f => ({...f, content: e.target.value}))}
-              />
-              <Button type="submit" disabled={docLoading}>Aggiungi</Button>
-            </form>
-            <ul className="space-y-1">
-              {documents.map(doc => (
-                <li key={doc.id} className="flex items-center justify-between bg-gray-50 rounded p-2">
-                  <span className="font-medium">{doc.title}</span>
-                  <Button variant="ghost" size="sm" onClick={() => handleDeleteDocument(doc.id)}>Elimina</Button>
-                </li>
-              ))}
-              {documents.length === 0 && <li className="text-gray-400 text-sm">Nessun documento inserito.</li>}
-            </ul>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+      <Tabs defaultValue="profile" className="w-full">
+        <TabsList className="mb-6 w-full flex">
+          <TabsTrigger value="profile" className="flex-1">Profilo Attività</TabsTrigger>
+          <TabsTrigger value="tone" className="flex-1">Tono</TabsTrigger>
+          <TabsTrigger value="knowledge" className="flex-1">Conoscenza</TabsTrigger>
+        </TabsList>
+        <TabsContent value="profile">
+          <BusinessProfileTab 
+            profile={profile}
+            form={form}
+            setForm={setForm}
+            edit={edit}
+            setEdit={setEdit}
+            onSave={handleSaveProfile}
+            loading={loading}
+          />
+        </TabsContent>
+        <TabsContent value="tone">
+          <ToneTab form={form} setForm={setForm} />
+        </TabsContent>
+        <TabsContent value="knowledge">
+          <KnowledgeTab
+            website={website}
+            setWebsite={setWebsite}
+            extractedTexts={extractedTexts}
+            setExtractedTexts={setExtractedTexts}
+            profile={profile}
+            documents={documents}
+            onAddDocument={handleAddDocument}
+            onDeleteDocument={handleDeleteDocument}
+          />
+        </TabsContent>
+      </Tabs>
   );
 }
