@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardHeader from './DashboardHeader';
@@ -12,6 +13,7 @@ export default function RecensioneProDashboard() {
   const { signOut, user } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [businessProfile, setBusinessProfile] = useState<any | null>(null);
+  const [subscription, setSubscription] = useState<any | null>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,6 +30,23 @@ export default function RecensioneProDashboard() {
       setBusinessProfile(data || null);
     }
     fetchProfile();
+  }, [user]);
+
+  // Fetch subscription
+  useEffect(() => {
+    async function fetchSubscription() {
+      if (!user) {
+        setSubscription(null);
+        return;
+      }
+      const { data } = await supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      setSubscription(data || null);
+    }
+    fetchSubscription();
   }, [user]);
 
   const restaurantInfo = {
@@ -62,7 +81,8 @@ export default function RecensioneProDashboard() {
   const showCompleteProfile =
     (!businessProfile && (activeTab === 'dashboard' || activeTab === 'settings'));
 
-  const trialEndsAt = user?.trial_ends_at || null; // Se disponibile su oggetto user
+  // Take trialEndsAt from subscription (if available)
+  const trialEndsAt = subscription?.trial_ends_at || null;
 
   return (
     <div className="min-h-screen bg-gray-50">
