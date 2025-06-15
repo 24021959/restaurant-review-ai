@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Calendar, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
@@ -62,9 +61,6 @@ export default function DashboardContent({
         <h1 className="text-2xl font-bold">
           Ciao, {getUserDisplayName()}! 👋
         </h1>
-        <p className="text-orange-100 text-lg">
-          Benvenuto nella dashboard di <span className="font-semibold">{restaurantInfo.name}</span>
-        </p>
         <p className="text-orange-200 text-sm">
           Gestisci le tue recensioni e monitora le performance della tua attività
         </p>

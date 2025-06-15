@@ -50,25 +50,6 @@ export default function DashboardStats({
         <div className="text-3xl font-bold mb-1">{dashboardStats.pendingReviews ?? "--"}</div>
         <div className="text-gray-500 text-sm">Risposte inviate oggi: {dashboardStats.respondedToday ?? "--"}</div>
       </div>
-      {/* Utilizzo API/trial */}
-      <div className="bg-white rounded-lg p-6 shadow flex flex-col items-start justify-between min-h-[170px] col-span-1 md:col-span-2">
-        <h4 className="text-orange-600 font-bold mb-2">Utilizzo App</h4>
-        <div className="flex items-center space-x-12 mb-2 w-full">
-          <div>
-            <div className="font-bold text-xl">{usageStats.totalDailyUsage ?? "--"}</div>
-            <div className="text-gray-400 text-xs">Utilizzo giornaliero</div>
-          </div>
-          <div>
-            <div className="font-bold text-xl">{usageStats.totalKeys ?? "--"}</div>
-            <div className="text-gray-400 text-xs">Chiavi API totali</div>
-          </div>
-          <div>
-            <div className="font-bold text-xl">{usageStats.activeKeys ?? "--"}</div>
-            <div className="text-gray-400 text-xs">Chiavi attive</div>
-          </div>
-        </div>
-        <div className="text-gray-400 text-xs">Media utilizzo: {usageStats.averageUsage ?? "--"}</div>
-      </div>
       {/* Cronologia attività (placeholder) */}
       <div className="bg-white rounded-lg p-6 shadow flex flex-col items-start justify-between min-h-[170px] md:col-span-2 lg:col-span-3">
         <h4 className="text-orange-600 font-bold mb-2">Cronologia attività</h4>
