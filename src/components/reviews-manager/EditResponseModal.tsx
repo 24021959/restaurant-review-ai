@@ -1,6 +1,9 @@
+
 import React from 'react';
 import { useOpenAIGenerateReply } from "@/hooks/useOpenAIGenerateReply";
-import { Button } from "@/components/ui/button";
+import EditResponseModalTitle from './EditResponseModalTitle';
+import EditResponseTextarea from './EditResponseTextarea';
+import EditResponseActions from './EditResponseActions';
 
 interface EditResponseModalProps {
   review: {
@@ -31,7 +34,7 @@ export default function EditResponseModal({
   const handleGenerate = async () => {
     const aiResp = await generateReply({
       reviewText: review.text,
-      businessName: "Il tuo ristorante", // TODO: si può rendere dinamico, prendere da profilo
+      businessName: "Il tuo ristorante",
       reviewLanguage: "italiano",
       businessDescription: "",
       communicationStyle: "formale",
@@ -44,26 +47,17 @@ export default function EditResponseModal({
 
   return (
     <div className="bg-white rounded-lg shadow-lg p-6 w-[90vw] max-w-lg">
-      <h2 className="text-lg font-semibold mb-4">Modifica Risposta</h2>
-      <textarea
-        className="border rounded p-2 w-full min-h-[120px] resize-vertical"
+      <EditResponseModalTitle />
+      <EditResponseTextarea
         value={editedResponse}
-        onChange={e => onEditedResponseChange(e.target.value)}
+        onChange={onEditedResponseChange}
       />
-      <div className="flex gap-2 justify-between mt-4">
-        <Button 
-          type="button" 
-          variant="secondary" 
-          onClick={handleGenerate} 
-          disabled={genLoading}
-        >
-          {genLoading ? "Generazione..." : "Risposta AI"}
-        </Button>
-        <div className="flex gap-2 ml-auto">
-          <Button onClick={onSave}>Salva</Button>
-          <Button variant="outline" onClick={onCancel}>Annulla</Button>
-        </div>
-      </div>
+      <EditResponseActions
+        onGenerate={handleGenerate}
+        onSave={onSave}
+        onCancel={onCancel}
+        genLoading={genLoading}
+      />
     </div>
   );
 }
