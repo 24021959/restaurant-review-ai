@@ -1,7 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { useGoogleBusinessService } from '@/hooks/useGoogleBusinessService';
-import { useApiKeyRotation } from '@/hooks/useApiKeyRotation';
 import DashboardHeader from './DashboardHeader';
 import DashboardSidebar from './DashboardSidebar';
 import DashboardContent from './DashboardContent';
@@ -11,31 +10,15 @@ import BusinessProfileManager from './BusinessProfileManager';
 export default function RecensioneProDashboard() {
   const { signOut, user } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
-  const [reviews, setReviews] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [businessProfile, setBusinessProfile] = useState<any | null>(null);
 
-  const googleBusinessService = useGoogleBusinessService();
-  const apiKeyRotation = useApiKeyRotation();
-  const usageStats = apiKeyRotation.getUsageStats();
-  const isOverLimit = apiKeyRotation.isOverLimit;
-
-  // Statistiche "finte" recensioni (finché non ci sono dati veri)
-  const dashboardStats = {
-    pendingReviews: 5,
-    respondedToday: 12,
-    avgResponseTime: "2.3h",
-    satisfactionRate: "94%"
-  };
-
-  // Carica i dati del profilo attività dell'utente autenticato
   useEffect(() => {
     async function fetchProfile() {
       if (!user) {
         setBusinessProfile(null);
         return;
       }
-      const { data, error } = await supabase
+      const { data } = await supabase
         .from("business_profiles")
         .select("*")
         .eq("user_id", user.id)
@@ -45,48 +28,34 @@ export default function RecensioneProDashboard() {
     fetchProfile();
   }, [user]);
 
-  // Inizializza le info intestazione: se businessProfile c'è, usa i dati veri, altrimenti valori neutri
   const restaurantInfo = {
     name: businessProfile ? businessProfile.business_name : "Nessuna attività",
     location: businessProfile ? (businessProfile.address || "Indirizzo non inserito") : "–",
-    avgRating: businessProfile ? 4.3 : 0, // Dato placeholder, da collegare a recensioni reali
-    totalReviews: businessProfile ? 847 : 0, // Idem
-    monthlyGrowth: businessProfile ? "+12%" : "–"
+    avgRating: businessProfile ? 0 : 0,
+    totalReviews: businessProfile ? 0 : 0,
+    monthlyGrowth: businessProfile ? "–" : "–"
   };
 
   const handleLogout = () => {
     signOut();
   };
 
-  const loadReviews = async () => {
-    setLoading(true);
-    try {
-      const result = await googleBusinessService.getReviews('sample_business_id');
-      if (result.rateLimited) {
-        console.warn('Rate limit raggiunto:', result.error);
-      } else if (result.error) {
-        console.error('Errore nel caricamento recensioni:', result.error);
-      } else {
-        setReviews(result.reviews);
-      }
-    } catch (error) {
-      console.error('Errore:', error);
-    } finally {
-      setLoading(false);
-    }
+  // Nessun dato finto dashboardStats
+  const dashboardStats = {
+    pendingReviews: 0,
+    respondedToday: 0,
+    avgResponseTime: "-",
+    satisfactionRate: "-"
   };
 
-  const refreshData = () => {
-    loadReviews();
+  const usageStats = {
+    totalDailyUsage: 0,
+    totalKeys: 0,
+    activeKeys: 0,
+    averageUsage: 0,
   };
+  const isOverLimit = false;
 
-  useEffect(() => {
-    if (activeTab === 'dashboard') {
-      loadReviews();
-    }
-  }, [activeTab]);
-
-  // Prompt per utenti senza profilo business
   const showCompleteProfile =
     (!businessProfile && (activeTab === 'dashboard' || activeTab === 'settings'));
 
@@ -117,9 +86,9 @@ export default function RecensioneProDashboard() {
               isOverLimit={isOverLimit}
               dashboardStats={dashboardStats}
               restaurantInfo={restaurantInfo}
-              loading={loading}
+              loading={false}
               onTabChange={setActiveTab}
-              onRefreshData={refreshData}
+              onRefreshData={() => {}}
             />
           )}
         </main>
