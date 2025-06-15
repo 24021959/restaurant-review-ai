@@ -19,12 +19,14 @@ export const useUserRole = () => {
       return;
     }
 
-    // Fetch robusto: una sola query .select('role')
-    supabase
-      .from('user_roles')
-      .select('role')
-      .eq('user_id', user.id)
-      .then(({ data, error }) => {
+    // Refattorizzato: usa una async IIFE per gestire la promise
+    (async () => {
+      try {
+        const { data, error } = await supabase
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', user.id);
+
         if (!isMounted) return;
         if (error) {
           setRole(null);
@@ -36,13 +38,15 @@ export const useUserRole = () => {
         } else {
           setRole(null);
         }
-      })
-      .catch(() => setRole(null))
-      .finally(() => { if (isMounted) setLoading(false); });
+      } catch (e) {
+        if (isMounted) setRole(null);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    })();
 
     return () => { isMounted = false; };
   }, [user]);
 
   return { role, isAdmin: role === "admin", isUser: role === "user", loading };
 };
-
