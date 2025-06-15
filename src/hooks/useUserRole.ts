@@ -9,41 +9,40 @@ export const useUserRole = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    setLoading(true); // Assicura che lo stato di caricamento sia attivo durante il fetch
+    let isMounted = true;
+    setLoading(!!user);
 
-    const fetchUserRole = async () => {
-      if (!user) {
-        setRole(null);
-        setLoading(false);
-        return;
-      }
+    // Non fetchare se non loggato
+    if (!user) {
+      setRole(null);
+      setLoading(false);
+      return;
+    }
 
-      try {
-        const { data, error } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id);
-
+    // Fetch robusto: una sola query .select('role')
+    supabase
+      .from('user_roles')
+      .select('role')
+      .eq('user_id', user.id)
+      .then(({ data, error }) => {
+        if (!isMounted) return;
         if (error) {
-          console.error('Error fetching user role:', error);
-          setRole('user'); // Default to user role
+          setRole(null);
+        } else if (Array.isArray(data)) {
+          // ATTENZIONE: Un utente NON dovrebbe mai avere sia admin che user. Ma qui diamo precedenza ad admin.
+          if (data.find(r => r.role === 'admin')) setRole('admin');
+          else if (data.find(r => r.role === 'user')) setRole('user');
+          else setRole(null);
         } else {
-          // If user has 'admin' role among their roles, consider them admin.
-          const isUserAdmin = data?.some(r => r.role === 'admin');
-          setRole(isUserAdmin ? 'admin' : 'user');
+          setRole(null);
         }
-      } catch (error) {
-        console.error('Error:', error);
-        setRole('user');
-      } finally {
-        setLoading(false);
-      }
-    };
+      })
+      .catch(() => setRole(null))
+      .finally(() => { if (isMounted) setLoading(false); });
 
-    fetchUserRole();
+    return () => { isMounted = false; };
   }, [user]);
 
-  const isAdmin = role === 'admin';
-
-  return { role, isAdmin, loading };
+  return { role, isAdmin: role === "admin", isUser: role === "user", loading };
 };
+

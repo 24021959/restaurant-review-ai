@@ -11,32 +11,31 @@ import { useToast } from '@/hooks/use-toast';
 
 export default function AdminLogin() {
   const { user, signIn, signOut, loading, resetPassword } = useAuth();
-  const { isAdmin, loading: roleLoading } = useUserRole();
+  const { role, loading: roleLoading } = useUserRole();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
   const { toast } = useToast();
 
+  // Se utente NON admin ma autenticato, viene sbalzato.
   useEffect(() => {
-    if (!loading && !roleLoading && user) {
-      if (isAdmin) {
+    if (!loading && !roleLoading && user && role) {
+      if (role === 'admin') {
         navigate('/admin', { replace: true });
-      } else {
-        // Se non è admin, logout automatico e mostra errore
-        const handleNonAdmin = async () => {
+      } else if (role === 'user') {
+        (async () => {
           await signOut();
           toast({
             title: "Accesso non autorizzato",
-            description: "Le credenziali inserite non appartengono a un amministratore.",
+            description: "Solo amministratori possono accedere qui.",
             variant: "destructive",
           });
-          navigate('/admin-login', { replace: true });
-        }
-        handleNonAdmin();
+          // Niente loop, rimane su questa pagina
+        })();
       }
     }
-  }, [loading, roleLoading, user, isAdmin, navigate, signOut, toast]);
+  }, [loading, roleLoading, user, role, navigate, signOut, toast]);
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -19,21 +20,21 @@ export default function Auth() {
   const navigate = useNavigate();
   const { toast } = useToast();
 
-  // Redirect after login
+  // Solo utenti normali possono procedere, admin vengono rimbalzati!
   useEffect(() => {
-    if (!loading && !roleLoading && user) {
-      if (role === 'admin') {
-        const handleAdminLoginAttempt = async () => {
+    if (!loading && !roleLoading && user && role) {
+      if (role === 'user') {
+        navigate('/dashboard', { replace: true });
+      } else if (role === 'admin') {
+        // Fai logout automatico se prova login da qui
+        (async () => {
           await signOut();
           toast({
-            title: "Accesso Amministratore",
-            description: "Per favore, utilizza la pagina di accesso dedicata agli amministratori.",
+            title: "Accesso amministratore non permesso qui",
+            description: "Effettua l'accesso dalla pagina dedicata per admin.",
             variant: "destructive",
           });
-        };
-        handleAdminLoginAttempt();
-      } else if (role === 'user') {
-        navigate('/dashboard', { replace: true });
+        })();
       }
     }
   }, [loading, roleLoading, user, role, navigate, signOut, toast]);
@@ -41,14 +42,12 @@ export default function Auth() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-
     try {
       if (isLogin) {
         await signIn(email, password);
       } else {
         await signUp(email, password, restaurantName);
       }
-      // Dopo il login, ci pensa lo useEffect a reindirizzare
     } finally {
       setIsSubmitting(false);
     }
