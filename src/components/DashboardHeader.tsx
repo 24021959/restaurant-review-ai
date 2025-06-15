@@ -25,7 +25,7 @@ export default function DashboardHeader({ restaurantInfo, onLogout }: DashboardH
               <img 
                 src="/lovable-uploads/ad1b3b88-da57-4d85-aa1a-0c4f08dc43f8.png" 
                 alt="RistoReply" 
-                className="h-24 w-auto cursor-pointer" 
+                className="h-8 w-auto bg-transparent cursor-pointer" 
                 onClick={() => navigate('/')} 
               />
             </div>

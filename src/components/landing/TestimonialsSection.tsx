@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Star } from 'lucide-react';
 import {
@@ -16,35 +15,35 @@ export default function TestimonialsSection() {
       restaurant: "Osteria del Centro",
       text: "Da quando uso RistoReply ho risparmiato 10 ore a settimana e le mie recensioni positive sono aumentate del 40%!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=150&h=150&fit=crop&crop=faces"
+      avatar: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Giulia Bianchi", 
       restaurant: "Trattoria La Nonna",
       text: "Finalmente posso concentrarmi sulla cucina mentre RistoReply si occupa delle recensioni. Semplicemente fantastico!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1594736797933-d0d501ba2fe6?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Andrea Conti",
       restaurant: "Pizzeria Napoletana",
       text: "Le risposte sono così naturali che i clienti pensano che sia sempre io a scrivere. Incredibile!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=150&h=150&fit=crop&crop=center"
+      avatar: "https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Sofia Romano",
       restaurant: "Ristorante Bellavista",
       text: "Prima impiegavo 2 ore al giorno per le recensioni. Ora posso dedicarmi completamente ai miei ospiti!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1600565193348-f74bd3c7ccdf?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Luca Ferrari",
       restaurant: "Bistrot del Porto",
       text: "RistoReply ha trasformato la gestione delle recensioni da incubo quotidiano a processo automatico. Fantastico!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1559329007-40df8a9345d8?w=150&h=150&fit=crop&crop=center"
+      avatar: "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?w=150&h=150&fit=crop&crop=center"
     },
     {
       name: "Francesca Marino",
@@ -58,7 +57,7 @@ export default function TestimonialsSection() {
       restaurant: "Osteria del Mare",
       text: "Incredibile come sia riuscito a liberare tempo per quello che amo davvero: cucinare per i miei clienti!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1537047902294-62a40c20a6ae?w=150&h=150&fit=crop&crop=center"
+      avatar: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Elena Ricci",
@@ -72,7 +71,7 @@ export default function TestimonialsSection() {
       restaurant: "Pizzeria Margherita",
       text: "Prima perdevo notti di sonno per le recensioni negative. Ora RistoReply gestisce tutto con professionalità.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1571997478779-2adcbbe9ab2f?w=150&h=150&fit=crop&crop=center"
+      avatar: "https://images.unsplash.com/photo-1607631568010-a87245c0daf8?w=150&h=150&fit=crop&crop=face"
     }
   ];
 
