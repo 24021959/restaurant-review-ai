@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, ChevronDown } from 'lucide-react';
 
 interface NavigationProps {
   onLoginClick: () => void;
@@ -9,6 +9,7 @@ interface NavigationProps {
 
 export default function Navigation({ onLoginClick, onRegisterClick }: NavigationProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isLoginMenuOpen, setIsLoginMenuOpen] = useState(false);
 
   return (
     <nav className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-50">
@@ -18,17 +19,43 @@ export default function Navigation({ onLoginClick, onRegisterClick }: Navigation
             <h1 className="text-2xl font-bold text-orange-600">🍝 RistoReply</h1>
             <span className="ml-2 text-sm text-gray-500">by AI</span>
           </div>
-          
+
           <div className="hidden md:flex items-center space-x-8">
             <a href="#features" className="text-gray-700 hover:text-orange-600 transition-colors">Funzionalità</a>
             <a href="#pricing" className="text-gray-700 hover:text-orange-600 transition-colors">Prezzi</a>
             <a href="#testimonials" className="text-gray-700 hover:text-orange-600 transition-colors">Recensioni</a>
-            <button 
-              onClick={onLoginClick}
-              className="text-gray-700 hover:text-orange-600 transition-colors"
-            >
-              Accedi
-            </button>
+
+            {/* MENU A CASCATA LOGIN */}
+            <div className="relative">
+              <button 
+                onClick={() => setIsLoginMenuOpen((prev) => !prev)}
+                className="flex items-center text-gray-700 hover:text-orange-600 transition-colors focus:outline-none"
+              >
+                Accedi
+                <ChevronDown className="ml-1 h-4 w-4" />
+              </button>
+              {isLoginMenuOpen && (
+                <div 
+                  className="absolute right-0 mt-1 w-44 bg-white border border-gray-200 rounded-lg shadow-lg z-30"
+                  onMouseLeave={() => setIsLoginMenuOpen(false)}
+                >
+                  <button
+                    className="w-full text-left px-4 py-2 hover:bg-orange-50 text-gray-700 rounded-t-lg"
+                    onClick={() => { setIsLoginMenuOpen(false); onLoginClick(); }}
+                  >
+                    Accesso Utente
+                  </button>
+                  <a
+                    href="/admin"
+                    className="block w-full px-4 py-2 hover:bg-orange-50 text-gray-700 rounded-b-lg"
+                    onClick={() => setIsLoginMenuOpen(false)}
+                  >
+                    Accesso Admin
+                  </a>
+                </div>
+              )}
+            </div>
+
             <button 
               onClick={onRegisterClick}
               className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700 transition-colors"
@@ -37,6 +64,7 @@ export default function Navigation({ onLoginClick, onRegisterClick }: Navigation
             </button>
           </div>
 
+          {/* Mobile menu button */}
           <button 
             className="md:hidden"
             onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -45,6 +73,34 @@ export default function Navigation({ onLoginClick, onRegisterClick }: Navigation
           </button>
         </div>
       </div>
+
+      {/* Mobile menu (mostra le opzioni di login separatamente) */}
+      {isMenuOpen && (
+        <div className="md:hidden px-4 pb-4">
+          <a href="#features" className="block py-2 text-gray-700 hover:text-orange-600 transition-colors">Funzionalità</a>
+          <a href="#pricing" className="block py-2 text-gray-700 hover:text-orange-600 transition-colors">Prezzi</a>
+          <a href="#testimonials" className="block py-2 text-gray-700 hover:text-orange-600 transition-colors">Recensioni</a>
+          <button
+            onClick={onLoginClick}
+            className="block w-full text-left py-2 text-gray-700 hover:text-orange-600 transition-colors"
+          >
+            Accesso Utente
+          </button>
+          <a
+            href="/admin"
+            className="block w-full py-2 text-gray-700 hover:text-orange-600 transition-colors"
+          >
+            Accesso Admin
+          </a>
+          <button 
+            onClick={onRegisterClick}
+            className="block w-full text-left py-2 bg-orange-600 text-white rounded-lg mt-2 hover:bg-orange-700 transition-colors"
+          >
+            Prova Gratis
+          </button>
+        </div>
+      )}
     </nav>
   );
 }
+
