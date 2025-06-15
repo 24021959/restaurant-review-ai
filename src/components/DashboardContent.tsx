@@ -1,10 +1,10 @@
-
 import React from 'react';
 import { Calendar, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import DashboardStats from './DashboardStats';
 import QuickActions from './QuickActions';
 import BusinessProfileManager from './BusinessProfileManager';
+import ReviewsManager from './ReviewsManager'; // <-- Added missing import
 
 interface DashboardContentProps {
   activeTab: string;

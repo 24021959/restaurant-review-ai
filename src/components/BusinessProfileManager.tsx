@@ -67,7 +67,8 @@ export default function BusinessProfileManager() {
           phone: data.phone || "",
           address: data.address || "",
           communication_style: data.communication_style || "formale",
-          custom_communication_style: data.custom_communication_style || "",
+          // If custom_communication_style does not exist in the data, fall back to empty string
+          custom_communication_style: (data as any).custom_communication_style || "",
         });
         const { data: docs } = await supabase
           .from("business_documents")
