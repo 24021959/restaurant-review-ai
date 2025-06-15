@@ -1,10 +1,11 @@
-
 import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import BusinessProfileTab from "./settings/BusinessProfileTab";
 import ToneTab from "./settings/ToneTab";
 import KnowledgeTab from "./settings/KnowledgeTab";
+import BusinessProfileGuide from "./settings/BusinessProfileGuide";
+import { TabSectionGuide } from "./settings/TabSectionGuide";
 
 export default function BusinessProfileManager() {
   const [profile, setProfile] = useState<any | null>(null);
@@ -22,6 +23,7 @@ export default function BusinessProfileManager() {
   const [website, setWebsite] = useState('');
   const [extractedTexts, setExtractedTexts] = useState<string[]>([]);
   const [documents, setDocuments] = useState<any[]>([]);
+  const [activeTab, setActiveTab] = useState<"profile" | "tone" | "knowledge">("profile");
 
   useEffect(() => {
     (async () => {
@@ -100,13 +102,16 @@ export default function BusinessProfileManager() {
   if (loading) return <div className="p-6 text-center">Caricamento…</div>;
 
   return (
-      <Tabs defaultValue="profile" className="w-full">
+    <div>
+      <BusinessProfileGuide />
+      <Tabs value={activeTab} onValueChange={tab => setActiveTab(tab as "profile" | "tone" | "knowledge")} className="w-full">
         <TabsList className="mb-6 w-full flex">
           <TabsTrigger value="profile" className="flex-1">Profilo Attività</TabsTrigger>
           <TabsTrigger value="tone" className="flex-1">Tono</TabsTrigger>
           <TabsTrigger value="knowledge" className="flex-1">Conoscenza</TabsTrigger>
         </TabsList>
         <TabsContent value="profile">
+          <TabSectionGuide activeTab="profile" />
           <BusinessProfileTab 
             profile={profile}
             form={form}
@@ -118,9 +123,11 @@ export default function BusinessProfileManager() {
           />
         </TabsContent>
         <TabsContent value="tone">
+          <TabSectionGuide activeTab="tone" />
           <ToneTab form={form} setForm={setForm} />
         </TabsContent>
         <TabsContent value="knowledge">
+          <TabSectionGuide activeTab="knowledge" />
           <KnowledgeTab
             website={website}
             setWebsite={setWebsite}
@@ -133,5 +140,6 @@ export default function BusinessProfileManager() {
           />
         </TabsContent>
       </Tabs>
+    </div>
   );
 }
