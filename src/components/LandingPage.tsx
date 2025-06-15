@@ -1,6 +1,7 @@
 
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
 import Navigation from './landing/Navigation';
 import HeroSection from './landing/HeroSection';
 import FeaturesSection from './landing/FeaturesSection';
@@ -12,23 +13,28 @@ import AuthModal from './landing/AuthModal';
 
 export default function LandingPage() {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
-  const [authMode, setAuthMode] = useState('login'); // 'login' or 'register'
+  const [authMode, setAuthMode] = useState('login');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [restaurantName, setRestaurantName] = useState('');
 
+  // If user is already authenticated, redirect to dashboard
+  React.useEffect(() => {
+    if (user) {
+      navigate('/dashboard');
+    }
+  }, [user, navigate]);
+
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulazione autenticazione - in produzione collegare a sistema auth reale
-    console.log('Auth:', { authMode, email, password, restaurantName });
-    // Redirect alla dashboard
-    window.location.href = '/dashboard';
+    // This is now handled by the Auth page
+    navigate('/auth');
   };
 
   const startFreeTrial = (plan?: string) => {
-    setAuthMode('register');
-    setShowAuthModal(true);
+    navigate('/auth');
   };
 
   const openDemo = () => {
@@ -36,13 +42,11 @@ export default function LandingPage() {
   };
 
   const handleLoginClick = () => {
-    setAuthMode('login');
-    setShowAuthModal(true);
+    navigate('/auth');
   };
 
   const handleRegisterClick = () => {
-    setAuthMode('register');
-    setShowAuthModal(true);
+    navigate('/auth');
   };
 
   return (
