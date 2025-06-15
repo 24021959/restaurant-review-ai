@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/contexts/AuthContext"; // AGGIUNTA!
+import { useAuth } from "@/contexts/AuthContext";
 
 type BusinessProfile = {
   id: string;
@@ -13,6 +13,7 @@ type BusinessProfile = {
   phone: string;
   address: string;
   communication_style: string;
+  custom_communication_style?: string;
 };
 
 type BusinessDocument = {
@@ -25,11 +26,14 @@ type BusinessDocument = {
 const communicationOptions = [
   { value: "formale", label: "Formale" },
   { value: "informale", label: "Informale" },
+  { value: "cordiale", label: "Cordiale" },
+  { value: "amichevole", label: "Amichevole" },
+  { value: "diretto", label: "Diretto" },
   { value: "personalizzato", label: "Personalizzato" },
 ];
 
 export default function BusinessProfileManager() {
-  const { user } = useAuth(); // AGGIUNTA!
+  const { user } = useAuth();
   const [profile, setProfile] = useState<BusinessProfile | null>(null);
   const [loading, setLoading] = useState(false);
   const [edit, setEdit] = useState(false);
@@ -40,6 +44,7 @@ export default function BusinessProfileManager() {
     phone: "",
     address: "",
     communication_style: "formale",
+    custom_communication_style: "",
   });
 
   const [documents, setDocuments] = useState<BusinessDocument[]>([]);
@@ -52,7 +57,7 @@ export default function BusinessProfileManager() {
       const { data, error } = await supabase
         .from("business_profiles")
         .select("*")
-        .maybeSingle(); // CAMBIATO per evitare errori se non esiste il profilo
+        .maybeSingle();
       if (data) {
         setProfile(data);
         setForm({
@@ -62,6 +67,7 @@ export default function BusinessProfileManager() {
           phone: data.phone || "",
           address: data.address || "",
           communication_style: data.communication_style || "formale",
+          custom_communication_style: data.custom_communication_style || "",
         });
         const { data: docs } = await supabase
           .from("business_documents")
@@ -92,7 +98,7 @@ export default function BusinessProfileManager() {
     } else {
       res = await supabase
         .from("business_profiles")
-        .insert({ ...form, user_id: user.id }) // AGGIUNTO user_id
+        .insert({ ...form, user_id: user.id })
         .select()
         .single();
     }
@@ -145,7 +151,7 @@ export default function BusinessProfileManager() {
               {profile.website && <div><b>Sito:</b> {profile.website}</div>}
               {profile.phone && <div><b>Telefono:</b> {profile.phone}</div>}
               {profile.address && <div><b>Indirizzo:</b> {profile.address}</div>}
-              <div><b>Tono comunicazione:</b> {profile.communication_style || "formale"}</div>
+              <div><b>Tono comunicazione:</b> {profile.communication_style === "personalizzato" ? profile.custom_communication_style : profile.communication_style}</div>
               <Button onClick={() => setEdit(true)} className="mt-4">Modifica Profilo</Button>
             </div>
           ) : (
@@ -196,13 +202,31 @@ export default function BusinessProfileManager() {
                 <select
                   className="border rounded w-full p-2"
                   value={form.communication_style}
-                  onChange={e => setForm(f => ({...f, communication_style: e.target.value}))}
+                  onChange={e => setForm(f => ({
+                    ...f,
+                    communication_style: e.target.value,
+                    // reset custom field if esci da personalizzato
+                    custom_communication_style: e.target.value === "personalizzato" ? f.custom_communication_style : ""
+                  }))}
                 >
                   {communicationOptions.map(opt => (
                     <option key={opt.value} value={opt.value}>{opt.label}</option>
                   ))}
                 </select>
               </div>
+              {/* Se personalizzato mostra campo testo */}
+              {form.communication_style === "personalizzato" && (
+                <div>
+                  <label className="block text-sm font-medium">Descrivi il tuo stile personalizzato</label>
+                  <input
+                    className="input border rounded w-full p-2"
+                    value={form.custom_communication_style}
+                    required
+                    onChange={e => setForm(f => ({...f, custom_communication_style: e.target.value}))}
+                    maxLength={120}
+                  />
+                </div>
+              )}
               <div className="flex gap-2 mt-3">
                 <Button type="submit" disabled={loading}>Salva Profilo</Button>
                 {profile && (
@@ -213,7 +237,6 @@ export default function BusinessProfileManager() {
           )}
 
           <hr className="my-6" />
-          {/* Gestione documenti/FAQ */}
           <div>
             <h4 className="font-semibold mb-2">Documenti/FAQ dell'attività</h4>
             <form className="flex flex-col md:flex-row gap-3 mb-4" onSubmit={handleAddDocument}>
