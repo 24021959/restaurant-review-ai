@@ -1,10 +1,11 @@
+
 import React from 'react';
 import { Calendar, AlertTriangle } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import DashboardStats from './DashboardStats';
 import QuickActions from './QuickActions';
 import BusinessProfileManager from './BusinessProfileManager';
-import ReviewsManager from './ReviewsManager'; // <-- Added missing import
+import ReviewsManager from './ReviewsManager';
 
 interface DashboardContentProps {
   activeTab: string;
@@ -41,25 +42,16 @@ export default function DashboardContent({
   onTabChange,
   onRefreshData
 }: DashboardContentProps) {
-  
+
   const renderDashboard = () => (
     <div className="space-y-6">
-      {isOverLimit && (
-        <Alert className="border-orange-300 bg-orange-100">
-          <AlertTriangle className="h-4 w-4 text-orange-700" />
-          <AlertDescription className="text-orange-800">
-            <strong>Limiti API raggiunti!</strong> Alcune funzionalità potrebbero essere limitate. Contatta l'amministratore.
-          </AlertDescription>
-        </Alert>
-      )}
-
+      {/* Rimosso Alert API Over Limit */}
       <DashboardStats
         usageStats={usageStats}
-        isOverLimit={isOverLimit}
+        isOverLimit={false}
         dashboardStats={dashboardStats}
         restaurantInfo={restaurantInfo}
       />
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 bg-gradient-to-r from-orange-100 via-yellow-100 to-green-100 shadow-lg rounded-xl p-6">
           <div className="flex items-center justify-between mb-4">
@@ -73,7 +65,6 @@ export default function DashboardContent({
             {loading ? "Caricamento..." : "Grafico in arrivo prossimamente!"}
           </div>
         </div>
-
         <QuickActions
           onTabChange={onTabChange}
           pendingReviewsCount={dashboardStats.pendingReviews}
@@ -87,14 +78,7 @@ export default function DashboardContent({
   const renderSettings = () => (
     <div className="space-y-6">
       <h2 className="text-2xl font-bold mb-4 text-orange-700">Impostazioni Attività</h2>
-      {/* Mostra ora solo la gestione del profilo attività, senza gestione API Keys */}
-      <BusinessProfileManager />
-    </div>
-  );
-
-  const renderBusinessProfile = () => (
-    <div>
-      <h2 className="text-2xl font-bold mb-4">Profilo azienda & documenti</h2>
+      {/* ACCORPATO: qui BusinessProfileManager */}
       <BusinessProfileManager />
     </div>
   );
@@ -106,9 +90,8 @@ export default function DashboardContent({
       return <ReviewsManager />;
     case 'settings':
       return renderSettings();
-    case 'profile':
-      return renderBusinessProfile();
     default:
       return renderDashboard();
   }
 }
+// Profilo attività: rimosso tab "profile"!

@@ -2,14 +2,7 @@
 import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { 
-  MessageCircle, 
-  Settings, 
-  BarChart3, 
-  Download,
-  RefreshCw,
-  Plus
-} from 'lucide-react';
+import { MessageCircle, BarChart3 } from 'lucide-react';
 
 interface QuickActionsProps {
   onTabChange: (tab: string) => void;
@@ -24,7 +17,6 @@ export default function QuickActions({
   onRefreshData,
   loading 
 }: QuickActionsProps) {
-  
   const actions = [
     {
       id: 'reviews',
@@ -33,17 +25,9 @@ export default function QuickActions({
       icon: MessageCircle,
       color: 'orange',
       urgent: pendingReviewsCount > 0
-    },
-    {
-      id: 'settings',
-      title: 'Impostazioni API',
-      description: 'Gestisci chiavi',
-      icon: Settings,
-      color: 'blue',
-      urgent: false
     }
   ];
-
+  // Azioni API/key rimosse!
   return (
     <Card>
       <CardHeader>
@@ -55,7 +39,7 @@ export default function QuickActions({
             onClick={onRefreshData}
             disabled={loading}
           >
-            <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+            <span className={`${loading ? 'animate-spin' : ''}`}>↻</span>
           </Button>
         </CardTitle>
       </CardHeader>
@@ -64,39 +48,35 @@ export default function QuickActions({
           <Button
             key={action.id}
             variant="outline"
-            className={`w-full p-4 h-auto justify-start hover:bg-${action.color}-50 border-${action.color}-200 ${
-              action.urgent ? `bg-${action.color}-50 border-${action.color}-300` : ''
+            className={`w-full p-4 h-auto justify-start hover:bg-orange-50 border-orange-200 ${
+              action.urgent ? `bg-orange-50 border-orange-300` : ''
             }`}
             onClick={() => onTabChange(action.id)}
           >
             <div className="flex items-center gap-3 w-full">
-              <action.icon className={`h-5 w-5 text-${action.color}-600`} />
+              <action.icon className={`h-5 w-5 text-orange-600`} />
               <div className="text-left">
-                <div className={`font-medium text-${action.color}-800`}>
+                <div className="font-medium text-orange-800">
                   {action.title}
                 </div>
-                <div className={`text-sm text-${action.color}-600`}>
+                <div className="text-sm text-orange-600">
                   {action.description}
                 </div>
               </div>
               {action.urgent && (
-                <div className={`ml-auto w-2 h-2 bg-${action.color}-500 rounded-full`} />
+                <div className="ml-auto w-2 h-2 bg-orange-500 rounded-full" />
               )}
             </div>
           </Button>
         ))}
-        
         <div className="pt-3 border-t space-y-2">
           <Button variant="outline" className="w-full" size="sm">
             <BarChart3 className="h-4 w-4 mr-2" />
             Esporta Report
-          </Button>
-          <Button variant="outline" className="w-full" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Backup Dati
           </Button>
         </div>
       </CardContent>
     </Card>
   );
 }
+// Le azioni API sono state eliminate.
