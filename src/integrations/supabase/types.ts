@@ -195,6 +195,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          action_url: string | null
+          created_at: string | null
+          id: string
+          message: string | null
+          read: boolean | null
+          title: string | null
+          type: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action_url?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string | null
+          read?: boolean | null
+          title?: string | null
+          type?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action_url?: string | null
+          created_at?: string | null
+          id?: string
+          message?: string | null
+          read?: boolean | null
+          title?: string | null
+          type?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string | null
@@ -253,6 +286,129 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: true
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      review_responses: {
+        Row: {
+          ai_response: string | null
+          confidence: number | null
+          created_at: string | null
+          edited_response: string | null
+          id: string
+          published_at: string | null
+          response_status: string | null
+          review_id: string
+          updated_at: string | null
+        }
+        Insert: {
+          ai_response?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          edited_response?: string | null
+          id?: string
+          published_at?: string | null
+          response_status?: string | null
+          review_id: string
+          updated_at?: string | null
+        }
+        Update: {
+          ai_response?: string | null
+          confidence?: number | null
+          created_at?: string | null
+          edited_response?: string | null
+          id?: string
+          published_at?: string | null
+          response_status?: string | null
+          review_id?: string
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_responses_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      reviews: {
+        Row: {
+          business_profile_id: string
+          created_at: string | null
+          customer_name: string | null
+          google_review_id: string | null
+          id: string
+          rating: number | null
+          review_date: string | null
+          review_language: string | null
+          review_text: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          business_profile_id: string
+          created_at?: string | null
+          customer_name?: string | null
+          google_review_id?: string | null
+          id?: string
+          rating?: number | null
+          review_date?: string | null
+          review_language?: string | null
+          review_text?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          business_profile_id?: string
+          created_at?: string | null
+          customer_name?: string | null
+          google_review_id?: string | null
+          id?: string
+          rating?: number | null
+          review_date?: string | null
+          review_language?: string | null
+          review_text?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_business_profile_id_fkey"
+            columns: ["business_profile_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      scraping_logs: {
+        Row: {
+          business_profile_id: string | null
+          executed_at: string | null
+          id: string
+          message: string | null
+          status: string | null
+        }
+        Insert: {
+          business_profile_id?: string | null
+          executed_at?: string | null
+          id?: string
+          message?: string | null
+          status?: string | null
+        }
+        Update: {
+          business_profile_id?: string | null
+          executed_at?: string | null
+          id?: string
+          message?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "scraping_logs_business_profile_id_fkey"
+            columns: ["business_profile_id"]
+            isOneToOne: false
+            referencedRelation: "business_profiles"
             referencedColumns: ["id"]
           },
         ]

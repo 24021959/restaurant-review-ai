@@ -1,1 +1,6 @@
+
 project_id = "rmzzpmgxdvpsrxcgtfhx"
+
+[functions.scrape-google-reviews]
+verify_jwt = true
+

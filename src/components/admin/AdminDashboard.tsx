@@ -1,10 +1,13 @@
-
 import React from "react";
 import AdminStats from "./AdminStats";
 import RealUserManagement from "./RealUserManagement";
 import SubscriptionManagement from "./SubscriptionManagement";
 import AllApiKeysManager from "./AllApiKeysManager";
 import SystemSettings from "./SystemSettings";
+import StripeIntegrationPanel from "./StripeIntegrationPanel";
+import IntegrationSettingsPanel from "./IntegrationSettingsPanel";
+import GoogleApiKeyPanel from "./GoogleApiKeyPanel";
+import ResendApiKeyPanel from "./ResendApiKeyPanel";
 
 export default function AdminDashboard() {
   return (
@@ -16,6 +19,12 @@ export default function AdminDashboard() {
           Admin Mode
         </span>
       </header>
+      {/* Sezione stato collegamenti piattaforme */}
+      <IntegrationSettingsPanel />
+      {/* Pannelli configurazione collegamenti */}
+      <StripeIntegrationPanel />
+      <GoogleApiKeyPanel />
+      <ResendApiKeyPanel />
       {/* Sezione statistiche */}
       <section>
         <AdminStats />
