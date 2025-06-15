@@ -16,63 +16,63 @@ export default function TestimonialsSection() {
       restaurant: "Osteria del Centro",
       text: "Da quando uso RistoReply ho risparmiato 10 ore a settimana e le mie recensioni positive sono aumentate del 40%!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Giulia Bianchi", 
       restaurant: "Trattoria La Nonna",
       text: "Finalmente posso concentrarmi sulla cucina mentre RistoReply si occupa delle recensioni. Semplicemente fantastico!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1559339352-11d035aa65de?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Andrea Conti",
       restaurant: "Pizzeria Napoletana",
       text: "Le risposte sono così naturali che i clienti pensano che sia sempre io a scrivere. Incredibile!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Sofia Romano",
       restaurant: "Ristorante Bellavista",
       text: "Prima impiegavo 2 ore al giorno per le recensioni. Ora posso dedicarmi completamente ai miei ospiti!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1594736797933-d0d14da71f12?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Luca Ferrari",
       restaurant: "Bistrot del Porto",
       text: "RistoReply ha trasformato la gestione delle recensioni da incubo quotidiano a processo automatico. Fantastico!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1566554273541-37a9ca77b91b?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Francesca Marino",
       restaurant: "La Tavola della Nonna",
       text: "Non devo più preoccuparmi delle recensioni negative. L'AI risponde sempre in modo professionale e cortese.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1607631568010-a87245c0dec8?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Giuseppe Lombardi",
       restaurant: "Osteria del Mare",
       text: "Incredibile come sia riuscito a liberare tempo per quello che amo davvero: cucinare per i miei clienti!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1583394838336-acd977736f90?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Elena Ricci",
       restaurant: "Ristorante Il Giardino",
       text: "Le recensioni positive sono triplicate da quando uso RistoReply. I clienti apprezzano le risposte immediate!",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1595273670150-bd0c3c392e46?w=150&h=150&fit=crop&crop=face"
     },
     {
       name: "Matteo Verdi",
       restaurant: "Pizzeria Margherita",
       text: "Prima perdevo notti di sonno per le recensioni negative. Ora RistoReply gestisce tutto con professionalità.",
       rating: 5,
-      avatar: "https://images.unsplash.com/photo-1519244703995-f4e0f30006d5?w=150&h=150&fit=crop&crop=face"
+      avatar: "https://images.unsplash.com/photo-1612198188060-c7c2a3b66eae?w=150&h=150&fit=crop&crop=face"
     }
   ];
 
