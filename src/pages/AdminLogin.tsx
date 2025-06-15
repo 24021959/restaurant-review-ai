@@ -7,14 +7,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card';
 import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
 
 export default function AdminLogin() {
-  const { user, signIn, loading } = useAuth();
+  const { user, signIn, signOut, loading } = useAuth();
   const { isAdmin, loading: roleLoading } = useUserRole();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!loading && !roleLoading && user) {
@@ -22,10 +24,19 @@ export default function AdminLogin() {
         navigate('/admin', { replace: true });
       } else {
         // Se non è admin, logout automatico e mostra errore
-        navigate('/auth', { replace: true });
+        const handleNonAdmin = async () => {
+          await signOut();
+          toast({
+            title: "Accesso non autorizzato",
+            description: "Le credenziali inserite non appartengono a un amministratore.",
+            variant: "destructive",
+          });
+          navigate('/admin-login', { replace: true });
+        }
+        handleNonAdmin();
       }
     }
-  }, [loading, roleLoading, user, isAdmin, navigate]);
+  }, [loading, roleLoading, user, isAdmin, navigate, signOut, toast]);
 
   const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault();
