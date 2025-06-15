@@ -1,4 +1,3 @@
-
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
@@ -13,7 +12,7 @@ interface AuthContextType {
   loading: boolean;
   signUp: (email: string, password: string, restaurantName: string) => Promise<{ error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
-  signOut: () => Promise<void>;
+  signOut: (onSignOutComplete?: () => void) => Promise<void>;
   resetPassword: (email: string, redirectTo?: string) => Promise<{ error: any }>;
 }
 
@@ -115,13 +114,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const signOut = async () => {
+  // Modifica: accetta optional callback al termine signOut
+  const signOut = async (onSignOutComplete?: () => void) => {
     try {
       await supabase.auth.signOut();
       toast({
         title: "Disconnesso",
         description: "A presto!"
       });
+      if (onSignOutComplete) onSignOutComplete();
     } catch (error) {
       console.error('Errore durante il logout:', error);
     }

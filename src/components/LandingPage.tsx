@@ -20,16 +20,10 @@ export default function LandingPage() {
   const [password, setPassword] = useState('');
   const [restaurantName, setRestaurantName] = useState('');
 
-  // If user is already authenticated, redirect to dashboard
-  React.useEffect(() => {
-    if (user) {
-      navigate('/dashboard');
-    }
-  }, [user, navigate]);
+  // Modifica: Non fare redirect automatico! Permetti agli utenti autenticati di vedere la home.
 
   const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
-    // This is now handled by the Auth page
     navigate('/auth');
   };
 

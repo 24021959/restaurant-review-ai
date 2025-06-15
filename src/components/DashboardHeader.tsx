@@ -1,7 +1,8 @@
 
 import React from 'react';
-import { MapPin, Star, LogOut } from 'lucide-react';
+import { MapPin, Star, LogOut, Home } from 'lucide-react';
 import NotificationDropdown from './NotificationDropdown';
+import { useNavigate } from "react-router-dom";
 
 interface DashboardHeaderProps {
   restaurantInfo: {
@@ -14,13 +15,15 @@ interface DashboardHeaderProps {
 }
 
 export default function DashboardHeader({ restaurantInfo, onLogout }: DashboardHeaderProps) {
+  const navigate = useNavigate();
+
   return (
     <header className="bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <div className="flex items-center">
             <div className="flex-shrink-0">
-              <h1 className="text-xl font-bold text-orange-600">🍝 RistoReply</h1>
+              <h1 className="text-xl font-bold text-orange-600 cursor-pointer" onClick={() => navigate('/')}>🍝 RistoReply</h1>
             </div>
             <div className="ml-8">
               <div className="flex items-center space-x-2">
@@ -29,6 +32,14 @@ export default function DashboardHeader({ restaurantInfo, onLogout }: DashboardH
                 <span className="text-sm text-gray-500">• {restaurantInfo.location}</span>
               </div>
             </div>
+            <button
+              className="ml-8 flex items-center text-gray-600 hover:text-orange-600 transition-colors"
+              onClick={() => navigate('/')}
+              title="Vai alla Home"
+            >
+              <Home className="h-5 w-5 mr-1" />
+              <span className="text-sm">Home</span>
+            </button>
           </div>
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2 text-sm text-gray-600">

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
 import DashboardHeader from './DashboardHeader';
@@ -6,11 +5,13 @@ import DashboardSidebar from './DashboardSidebar';
 import DashboardContent from './DashboardContent';
 import { supabase } from "@/integrations/supabase/client";
 import BusinessProfileManager from './BusinessProfileManager';
+import { useNavigate } from 'react-router-dom';
 
 export default function RecensioneProDashboard() {
   const { signOut, user } = useAuth();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [businessProfile, setBusinessProfile] = useState<any | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchProfile() {
@@ -36,8 +37,9 @@ export default function RecensioneProDashboard() {
     monthlyGrowth: businessProfile ? "–" : "–"
   };
 
+  // Refactor logout per redirezionare home
   const handleLogout = () => {
-    signOut();
+    signOut(() => navigate("/"));
   };
 
   // Nessun dato finto dashboardStats
